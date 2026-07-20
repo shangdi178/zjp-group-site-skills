@@ -1,0 +1,85 @@
+﻿@*子分类咨询模板*@
+@inject NodeService NodeService
+@inject LetterCategoryService LetterCategoryService
+
+@Power.VisualizationView(new { Area = "LetterBox", Action = "LetterBoxList"})
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    string keyword = UrlParams.keyword?.ToString();
+    ViewBag.NavigationIdentifier.Add("xygk");
+    ViewBag.NavigationIdentifier.Add("yzxx");
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    ViewBag.bodyClass = "letterListPage";
+    int id = ViewBag.CategoryId ?? 0;
+    var letterCategory = LetterCategoryService.GetEntity(m => m.CategoryId == id);
+    var list = LetterCategoryService.GetChildren(5, letterCategory.Identifier);
+    ViewBag.PageTitle = letterCategory.CategoryName + "_" + node?.NodeName + "_" + this.Context.GetCurrentSite().SiteTitle;
+}
+@section header {
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/letterbox/css/letterbox.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content">
+
+    <!-- side S -->
+    <aside class="side">
+
+        <div id="sideMenu" class="sideBox">
+            <div class="hd">
+                <h3><span>@letterCategory.CategoryName</span></h3>
+            </div>
+            <div class="bd">
+                <ul class="menuList">
+                    @foreach (var childNode in list)
+                    {
+                        <li class="@Power.Focus(childNode.Identifier, "on")"><a href="@Power.Url.LetterBoxListUrl(childNode.CategoryId)">@childNode.CategoryName</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+        
+    </aside>
+    <!-- side E -->
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })&gt;<span>@letterCategory.CategoryName</span></div>
+                <h3><span>全部咨询信件</span></h3>
+                <a target="_blank" class="msgWriteBtn" href="@Power.Url.LetterBoxWriteUrl(letterCategory.CategoryId)"><i></i>我要咨询</a>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <div class="letterSearch">
+                    <div class="searchBox">
+                        <div class="hd">信件搜索</div>
+                        <div class="bd">
+                            @if (letterCategory.CategoryId > 0)
+                            {
+                                <form action="@Power.Url.LetterBoxListUrl(letterCategory.CategoryId)" method="get">
+                                    <input class="keyword" type="text" name="keyword" value="@keyword" placeholder="请输入关键字">
+                                    <input class="searchsubmit" type="submit" value="搜索">
+                                </form>
+                            }
+                            else
+                            {
+                                <form action="@Power.Url.LetterBoxListUrl()" method="get">
+                                    <input class="keyword" type="text" name="keyword" value="@keyword" placeholder="请输入关键字">
+                                    <input class="searchsubmit" type="submit" value="搜索">
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+                @Power.Partial("分类咨询列表", new { id = letterCategory.CategoryId, keyword })
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->

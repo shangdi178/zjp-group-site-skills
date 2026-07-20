@@ -1,0 +1,81 @@
+﻿@*列表页模板*@
+@inject NodeService NodeService
+
+@Power.VisualizationView(new { Area = "ContentManage", Controller = "Node"})
+@model Node
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+}
+@section header {
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content">
+    <!-- side S -->
+    <aside class="side">
+        @Power.Partial("侧栏-通用", new { Node = Model , ShowHotNews = false})
+    </aside>
+    <!-- side E -->
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = Model })</div>
+                <h3><span>@Model.NodeName</span></h3>
+            </div>
+            <div class="mBd">
+
+                 <!-- 栏目循环 S -->
+                <div class="pageBoxLoop">
+                @{
+                    var nodeService = NodeService;
+                    var childNodes = nodeService.GetChildNodeList(Model).Take(999);
+                    var index = 1;
+                    var pageFloat = "fl";
+                    foreach (Node childNode in childNodes.Where(n => n.ShowOnParentNodeList))
+                    {
+                        pageFloat=index%2==0?"fr":"fl";
+                        index++;
+                        <div class="box @pageFloat">
+                            <div class="hd ">
+                                @Power.Url.NodeLink(childNode.Identifier, "更多>>",new { @class="more" })
+                                <h3>@Power.Url.NodeLink(childNode.Identifier)</h3>
+                            </div>
+                            <div class="bd">
+                                @if (childNode.MoldId == 2)
+                                {
+                                    <ul class="infoList">
+                                        @Power.PhotoList("图片标题列表", new { Count = 5, Node = childNode.Identifier, TitleLength = 54, DateFormat = "MM-dd", Sort = "Hits", RefNode = true })
+                                    </ul>
+                                }
+                                else if (childNode.MoldId == 3)
+                                {
+                                    <ul class="infoList">
+                                        @Power.VideoList("视频标题列表", new { Count = 5, Node = childNode.Identifier, TitleLength = 54, DateFormat = "MM-dd", Sort = "Hits", RefNode = true })
+                                    </ul>
+                                }
+                                else
+                                {
+                                    
+                    
+                    <ul class="friendLinkListF">
+                    @Power.ContentList("友情链接列表", new { Node = childNode.Identifier, Count = 5, TitleLength = 80, RefNode = true })
+                </ul>
+                    
+                    
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+                </div>
+                <!-- 栏目循环 E -->
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->

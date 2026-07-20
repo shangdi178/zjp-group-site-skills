@@ -1,0 +1,45 @@
+﻿@*单页模板*@
+@inject NodeInterfaceExtend NodeInterfaceExtend
+@model Node
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.HeaderTitle = Model.NodeName;
+}
+
+@section header {
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">@Power.Partial("位置导航", new { Node = Model })</div>
+<!-- content S -->
+<div id="content">
+    @Power.Partial("节点归档图标", new { Node = Model })
+    @NodeInterfaceExtend.NodeHits(Model)
+    <!-- 正文内容 S -->
+    <div class="articleCon">
+        <div class="printArea" data-power-area='content'>
+            <!-- 标题 -->
+            <h3 class="title">@Model.NodeName</h3>
+            <div class="property">
+                <span class="size"><a href="javascript:;" data-power-command="reducefont" class="s">T</a> <a href="javascript:;" data-power-command="enlargefont" class="l">T</a></span>
+            </div>
+            <!-- 正文 -->
+            <div class="conTxt" data-power-defaultFontSize="16" data-power-defaultLineHeight="2" data-power-imgMaxWidth="800">
+                @Model.Description()
+            </div>
+        </div>
+        <div class="userControl">
+            @*@Power.Partial("分享按钮")*@
+
+
+        </div>
+    </div>
+    <!-- 正文内容 E -->
+
+</div>
+<!-- content E -->
+@section scripts{
+    <script src="~/content/_common/assets/scripts/jquery.PrintArea.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/ueditor/ueditor.parse.min.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/article.js" asp-append-version="true"></script>
+}

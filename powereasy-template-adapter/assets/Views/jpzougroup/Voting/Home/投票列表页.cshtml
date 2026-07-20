@@ -1,0 +1,46 @@
+﻿@*投票列表页模板*@
+@inject NodeService NodeService
+
+@Power.VisualizationView(new { Area = "Voting", Action = "List" })
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("zxtp");
+    var node = NodeService.GetNodeByIdentifier("zxtp");
+    ViewBag.PageTitle = node.NodeName+"_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.bodyClass = "voteListPage";
+}
+@section header
+{
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/_common/voting/css/vote.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content">
+    <!-- side S -->
+    <aside class="side">
+        @Power.Partial("侧栏-通用", new { Node = node })
+    </aside>
+    <!-- side E -->
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial( "位置导航", new { Node = node })</div>
+                <h3><span>@node.NodeName</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <div class="voteCommonList">
+                    @Power.Partial("投票列表", new { Count = 10, Paging = true, ShowDate = true, ShowButton = true })
+                </div>
+                <div class="page">@Power.Partial("通用分页")</div>
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->

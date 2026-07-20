@@ -1,0 +1,126 @@
+﻿@*内容页模板*@
+@inject PhotoService PhotoService
+@inject ContentInterfaceExtendHelper ContentInterfaceExtendHelper
+
+@Power.VisualizationView(new { Area = "ContentManage", Controller = "Photo"})
+@model Photo
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.PageTitle = Model.Title + "_" + this.Context.GetCurrentSite().SiteTitle;
+}
+@section header {
+    <link href="~/content/_common/base/css/power-comment.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/_common/base/css/photo.css" asp-append-version="true" rel="stylesheet" type="text/css" />
+}
+<script type="text/javascript">
+    //图片集数据
+    var slide_data = eval(@(PhotoService.GetSlideDataHtml(Power.Url,Model, "/content/_common/base/img/nopic.gif")));
+    var ARTICLE_DATA = {
+        cmntFix: 0,
+        channelId: 0,
+        width: 1000
+    };
+    var SLIDE_DATA = {
+        imgType: 'img',
+        allowDownload: true
+    };
+</script>
+
+<!-- content S -->
+@ContentInterfaceExtendHelper.Hits(Model, false)
+<div id="content" class="photoContent">
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Model.Node })&gt;<span>详细内容</span></div>
+                <h3><span>@Model.Node.NodeName</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                @Power.Partial("内容归档图标", new { Model.Archived, Model.ArchivedTime })
+                <div class="slide-wrap  slide-wrap-loading" id="SI_Slide_Wrap">
+                    <div class="sw-player" id="SI_Player">
+                        <div class="part-a">
+                            <div class="swp-tit clearfix">
+                                <h2>@Model.Title().SetFontStyle(Model.TitleColor, Model.TitleFontStyle)</h2>
+                            </div>
+                            <div class="subheading">@Model.Subheading</div>
+                            <div class="swp-tool">
+                                <div class="swpt-extra">
+                                    <span class="swpt-tip">支持 <i></i> 键翻阅图片</span>
+                                    <span id="SI_Mode_Trigger" class="swpt-mode-wrap"><a href="javascript:;" class="swpt-mode swpt-mode-list" action-type="mode-toggle" suda-uatrack="key=hdphoto_20140213&value=listview"><i></i>列表查看</a><a href="javascript:;" class="swpt-mode swpt-mode-hp" style="display: none;" action-type="mode-toggle" suda-uatrack="key=hdphoto_20140213&value=hdview"><i></i>高清查看</a></span>
+                                    <a id="SI_Original_Lnk" href="javascript:;" target="_blank" action-type="slide-original" class="swpt-original" suda-uatrack="key=hdphoto_20140213&value=largephoto"><i></i>大图</a>
+                                    <div class="swpt-full-wrap">
+                                        <div class="swpt-flash-wrap" data-sudaclick="blk_ecbFullScreen" title="点击全屏获得更好观看效果">
+                                            <div class="swpt-flash" id="SI_FullScreenFlash"></div>
+                                        </div>
+                                        <a suda-uatrack="key=hdphotov2&value=fullscreen" href="javascript:;" class="swpt-full-tip"><i></i>全屏观看</a>
+                                    </div>
+                                    @Power.Partial("进入后台编辑", new { Id = Model.ContentId, MoldType = "Photo", ClassName="swp-admin-edit" })
+                                </div>
+                                <em style="display: none" slide-type="time"></em>
+                                <em class="swpt-time">发布时间：@Model.PublishTime.ToString("yyyy-MM-dd HH:mm:ss")</em>
+                            </div>
+                            <div class="swp-hd-wrap">
+                                <div class="swp-hd" id="SI_Cont" slide-type="cont" action-type="slide-move">
+                                </div>
+                                <a href="javascript:;" slide-type="prev" action-type="slide-prev" class="rgba-w-60 swp-btn swp-prev" title="上一张" hidefocus><i></i></a>
+                                <a href="javascript:;" slide-type="next" action-type="slide-next" class="rgba-w-60 swp-btn swp-next" title="下一张" hidefocus><i></i></a>
+                            </div>
+                            <!-- 图片介绍 start -->
+                            <div class="swp-txt clearfix" slide-type="introWrap">
+                                <div class="swpt-table">
+                                    <div class="swpt-cell">
+                                        <div class="swpt-cont" slide-type="intro">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 图片介绍 end -->
+                            <!-- 小图列表 start -->
+                            <div class="swp-list-wrap" scroll-type="wrap" id="SI_SmallList">
+                            </div>
+                            <!-- 小图列表 end -->
+                            <!-- 列表模式 start -->
+                            <div class="sw-list clearfix" id="SI_List" style="display: none;">
+                            </div>
+                            <!-- 列表模式 end -->
+                            <!-- 图片集简介 start -->
+                            <div class="swp-intro">
+                                <h3 class="swp-intro-title">图集介绍</h3>
+                                <div class="swp-intro-detail">
+                                    <script>
+                                        $(".swp-intro-detail").html(slide_data.slide.long_intro);
+                                    </script>
+                                </div>
+                            </div>
+                            <!-- 图片集简介 end -->
+                            <div class="articleCon">
+                                 @Power.Partial("点赞收藏", new { contentId = Model.ContentId })
+                                 @Power.Partial("智能标签", new { Content = Model })
+                            </div>
+                            @Power.Partial("相关内容", new { Model.ContentId, Model.NodeId, TitleLength = 200 })
+                            @if (Model.EnabledComment && Model.IsApprove())
+                            {
+                                @Power.Partial("评论区块", new { contentId = Model.ContentId, moldType = MoldType.Photo })
+                            }
+                        </div>
+                    </div>
+                </div>
+                @Power.Partial("审核人员列表", new { Model, ShowALLAuditRecord = true })
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->
+<!-- 高清图主js和启动js start -->
+<script src="~/content/_common/base/js/photo/swfobject.js" asp-append-version="true"></script>
+<script src="~/content/_common/base/js/photo/slide.js" asp-append-version="true"></script>
+<script src="~/content/_common/base/js/photo/boot.js" asp-append-version="true"></script>
+<!-- 高清图主js和启动js end -->

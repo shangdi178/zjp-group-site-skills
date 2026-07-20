@@ -1,0 +1,54 @@
+﻿@*提交咨询结果页模板*@
+@inject NodeService NodeService
+
+@model Letter
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("xygk");
+    ViewBag.NavigationIdentifier.Add("yzxx");
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    ViewBag.PageTitle = "提交成功_" + node?.NodeName + "_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.bodyClass = "letterResultPage";
+}
+@section header {
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/letterbox/css/letterbox.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content" class="noSideContent">
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+                <h3><span>反馈信息</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <div class="queryResult queryFeedback">
+                    <div class="tit">
+                        <h3>提交成功！</h3>
+                    </div>
+                    <div class="con">
+                        <div class="tips">
+                            请记录您的信件查询编号：<span class="number">@Html.DisplayFor(m => m.ApplicationFormNumber) </span>
+                            @if (Model.UserId > 0)
+                            {
+                                <br />
+                                @("后续您也可以在\"用户中心--我的咨询信件\"直接查看信件的处理和回复情况。")
+                            }
+                        </div>
+                    </div>
+                    <div class="bot"><a id="queryResult" href='@Power.Url.NodeUrl("bmzx")'>返回</a></div>
+                </div>
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->
+

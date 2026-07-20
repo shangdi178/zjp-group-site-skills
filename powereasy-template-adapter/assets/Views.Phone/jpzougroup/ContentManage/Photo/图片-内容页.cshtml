@@ -1,0 +1,83 @@
+﻿@*内容页模板*@
+@model Photo
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.HeaderTitle = Model.Node.NodeName;
+    ViewBag.PageTitle = Model.Title + "_" + this.Context.GetCurrentSite().SiteTitle;
+    PhotoService service = PhotoService;
+
+    var photosList = Model.PhotosList;
+    var html = "";
+    if (photosList != null)
+    {
+        for (int i = 0; i < photosList.Count; i++)
+        {
+            if (!string.IsNullOrEmpty(photosList[i].PhotoUrl))
+            {
+                var img = Url.Content(photosList[i].PhotoUrl);
+                var smallImg = Power.Thumbnail(StringExtensionsHelper.ToUrl(photosList[i].PhotoUrl), 640, 0);
+                html += "<li><div class='pic'><a href='" + img + "' target='_blank'><img rel='" + smallImg + "'/></a></div><div class='con'>" + photosList[i].PhotoIntro + "</div></li>";
+            }
+        }
+    }
+}
+
+
+
+@section header {
+    <link href="~/content/_common/base/css/power-comment.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">@Power.Partial("位置导航", new { Model.Node })&gt;<span>详细内容</span></div>
+<!-- content S -->
+<div id="content">
+    @Power.Partial("内容归档图标", new { Model.Archived, Model.ArchivedTime })
+    <!-- 正文内容 S -->
+    <article class="articleCon photoCon">
+        <!-- 标题 -->
+        <h2 class="title">
+            @Model.Title().SetFontStyle(Model.TitleColor, Model.TitleFontStyle)
+            <div class="subheading">@Model.Subheading</div>
+        </h2>
+
+        <div class="property">
+            <span>来源：@Model.CopyFrom </span> <span>作者：@Model.Author </span> <span>发布时间：@Model.PublishTime.ToString("yyyy-MM-dd HH:mm:ss")</span> <span>浏览次数：@ContentInterfaceExtendHelper.Hits(Model) 次</span>
+        </div>
+
+        <!-- 图片切换 -->
+        <div class="picSlideBox" id="picSlideBox">
+            <div class="bd">
+                <ul class="list">@html.ToHtml()</ul>
+            </div>
+            <span class="pageState"></span>
+            <a class="prev"></a>
+            <a class="next"></a>
+        </div>
+        <script>
+            $("#picSlideBox").slide({ autoPage: true, effect: "left", mainCell: ".list", switchLoad: "rel" })
+        </script>
+
+        <!-- 正文 -->
+        <div class="conTxt">
+            @Model.Intro(true).ToHtml()
+            @Power.Partial("审核人员列表", new { Model, ShowALLAduitRecord = true })
+        </div>
+
+        <div class="userControl">
+            @*@Power.Partial("分享按钮")*@
+@inject PhotoService PhotoService
+@inject StringExtensionsHelper StringExtensionsHelper
+@inject ContentInterfaceExtendHelper ContentInterfaceExtendHelper
+
+        </div>
+
+        <div class="others">
+            @Power.Partial("内容页-上下篇", new { Model.ContentId, Unit = "张" })
+        </div>
+
+    </article>
+    <!-- 正文内容 E -->
+
+</div>
+<!-- content E -->

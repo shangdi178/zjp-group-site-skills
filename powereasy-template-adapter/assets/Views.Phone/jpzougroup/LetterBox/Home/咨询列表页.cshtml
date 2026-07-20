@@ -1,0 +1,133 @@
+﻿@*咨询列表页模板*@
+@inject LetterService LetterService
+@inject LetterCategoryService LetterCategoryService
+@inject NodeService NodeService
+
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    string keyword = UrlParams.keyword?.ToString();
+    int letterCategoryId = ViewBag.categoryId ?? 0;
+    IPagedList<Letter> letterList = null;
+    letterList = string.IsNullOrWhiteSpace(keyword) ?
+        LetterService.GetPagedList(20, letterCategoryId, true, null, "") :
+        LetterService.GetPagedList(20, letterCategoryId, true, m => m.Title.Contains(keyword), string.Empty);
+
+    LetterCategory letterCategory = null;
+    var count = 0;
+    if (letterCategoryId > 0)
+    {
+        letterCategory = LetterCategoryService.GetEntity(m => m.CategoryId == letterCategoryId);
+    }
+    ViewBag.bodyClass = "letterListPage";
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    ViewBag.NavigationIdentifier.Add("yzxx");
+    ViewBag.PageTitle = letterCategory.CategoryName + "_" + node?.NodeName + "_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.HeaderTitle = node?.NodeName;
+}
+
+@section header {
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/letterbox/css/letterbox.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">
+    @Power.Partial("位置导航", new { Node = node })
+    @if (letterCategory != null)
+    {
+        <label>&gt;@letterCategory.CategoryName</label>
+    }
+</div>
+
+<!-- content S -->
+<div id="content">
+    <div class="mainBox">
+        <div class="mHd">
+            <div class="select">
+                <a href="@Url.Action("Query", "home", new { area = "LetterBox" })"><i></i><span>结果查询</span></a>
+            </div>
+            <div class="write">
+                @if (letterCategoryId > 0)
+                {
+                    <a href="@Power.Url.LetterBoxWriteUrl(letterCategoryId)"><i></i><span>我要咨询</span></a>
+                }
+                else
+                {
+                    <a href="@Power.Url.LetterBoxWriteUrl()"><i></i><span>我要咨询</span></a>
+                }
+            </div>
+            <ul>
+                <li class="on"><a>全部咨询</a></li>
+                @if (letterCategoryId == 0)
+                {
+                    <li><a href="@Power.Url.LetterBoxPublicityUrl()">公开咨询</a></li>
+                }
+            </ul>
+        </div>
+
+        <div class="mBd">
+            <!-- 正文内容 S -->
+            <table class="letterList">
+                <thead>
+                <tr>
+                    <th class="ico">&nbsp;</th>
+                    <th class="title">咨询主题</th>
+                    <th class="state">办理情况</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (letterList != null)
+                {
+                    foreach (var letter in letterList)
+                    {
+                        count++;
+                        var even = count % 2 == 0 ? "even" : "";
+                        string trClass;
+                        if (letter.LetterBoxPublicStatus == LetterBoxPublicStatus.Publicized)
+                        {
+                            trClass = "openLetter " + even;
+                        }
+                        else
+                        {
+                            trClass = even;
+                        }
+                        <tr class="@trClass">
+                            <td class="ico">
+                                @if (letter.LetterBoxPublicStatus == LetterBoxPublicStatus.Publicized)
+                                {
+                                    <img src="~/content/_common/base/img/msg.png" alt="公开咨询" title="公开咨询">
+                                }
+                                else
+                                {
+                                    <img src="~/content/_common/base/img/msglock.png" alt="非公开咨询" title="非公开咨询">
+                                }
+                            </td>
+                            <td class="title">
+                                @if (letter.LetterBoxPublicStatus == LetterBoxPublicStatus.Publicized)
+                                {
+                                    <a href="@Url.Action("Details", new { id = letter.LetterId, Area = "LetterBox" })" title="@letter.Title">@letter.Title</a>
+                                }
+                                else
+                                {
+                                    <text>非公开信息</text>
+                                }
+                            </td>
+                            <td class="state">
+                                @if (letter.LetterStatus == LetterStatus.Processed)
+                                {
+                                    <i class="s3">已办理</i>
+                                }
+                                else
+                                {
+                                    <i class="s2">办理中</i>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+            <div class="page">@Power.Partial("通用分页")</div>
+            <!-- 正文内容 E -->
+        </div>
+    </div>
+</div>
+<!-- content E -->

@@ -1,0 +1,124 @@
+﻿@charset "utf-8";
+
+/* 写信按钮 */
+.msgWriteBtn,
+.msgQueryBtn{float:left; *display: inline;height:30px;line-height:30px;margin: 5px 0px 0 15px;background: url(../img/icon-01.png) no-repeat 9px 7px #920a19;padding:0px 10px 0px 30px;border-radius:5px;color:#fff;font-size:14px;}
+.msgWriteBtn:hover,
+.msgQueryBtn:hover{text-decoration: none;filter: alpha(opacity=80);opacity: 0.8; color:#fff;}
+.msgQueryBtn{background: url(../img/icon-02.png) no-repeat 11px 8px #920a19;}
+
+/* 信件搜索 */
+.letterSearch{ overflow: hidden; margin: 0 0 10px; text-align: center;}
+.letterSearch .searchBox{ float:right;}
+.letterSearch .searchBox .hd{ height: 30px; line-height: 30px; padding: 0 10px 0 0px; float: left; font-size: 14px; color: #333; font-weight:bold;}
+.letterSearch .searchBox .bd{ height: 30px; width: auto; float: left; padding: 0;}
+.letterSearch .searchBox .keyword{ width: 200px; height: 20px; line-height: 20px; font-size: 14px; padding: 4px 0px 4px 15px; background: #fff; border: 1px solid #ccc; border-right: none; outline: none; float: left;}
+.letterSearch .searchBox .searchsubmit{ background: #920a19; width: 60px; height: 30px; line-height: 30px; font-size: 14px; color: #fff; text-align: center; border: none; float: left; font-weight: bold;}
+.letterSearch .searchBox .select{ float: left;}
+.letterSearch .searchBox .select a{ display: block; background-color: #920a19; height: 36px; line-height: 36px; font-size: 16px; color: #fff; padding: 0 20px;}
+.letterSearch .searchBox .select a:hover{ filter: alpha(opacity=80);opacity: 0.8;}
+
+/* 网上信访-信件列表页 ----------------------------------------------------- */
+.letterList{width:100%}
+.letterList td,.letterList th{ padding:8px; text-align:center;}
+.letterList th{ color:#920a19}
+.letterList th.dep{width: 60px;}
+.letterList th.date{width: 80px;}
+.letterList th.state{width: 60px;}
+.letterList thead{ background:#F7F7F7; border-bottom:1px dashed #d2d2d2; }
+.letterList .title{text-align:left; }
+.letterList .num{display:none}
+.letterList .ico{padding:8px 2px;}
+.letterList .ico img{vertical-align:middle;}
+.letterList i{font-style:normal;}
+.letterList .s0,
+.letterList .noreply{color:#999;}
+.letterList .s1{color:#17d;}
+.letterList .s2{color:#f60;}
+.letterList .isreply,
+.letterList .s3{color:#390;}
+.letterList .s4{color:#999;}
+
+/* 网上信访-信件内容页  */
+.detailTable { margin-bottom: 10px; background: #fff; width: 100%; }
+.detailTable,
+.detailTable tr,
+.detailTable tr td { border: 1px solid #e6e6e6; border-collapse: collapse; }
+.detailTable thead tr { border-color: #920a19; }
+.detailTable thead th { background: #920a19; height: 40px; line-height: 40px; color: #fff; font-size: 16px; text-align: center; border-color: #920a19; }
+.detailTable tbody td { padding: 10px 15px; }
+.detailTable tbody td.tdName { font-weight: bold; background: #f7f7f7; text-align: center; width: 20%; font-size: 14px; }
+.detailTable .trTitle .tdCon { font-weight: bold; }
+.detailTable .trName td:nth-child(2),
+.detailTable .trUnit td:nth-child(2) { width: 160px }
+.detailTable .trName td:nth-child(3),
+.detailTable .trUnit td:nth-child(3) { width: 160px }
+.detailTable .preDiv { width: auto; overflow: auto; }
+.detailTable .preDiv pre { font-size: 14px; font-family: "Microsoft YaHei", 'PingFang SC', SimSun, Arial, Helvetica, Tahoma, sans-serif; white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word; }
+
+/* 写信页 */
+.onlineplForm{padding: 30px;}
+.onlineplForm .hd{height: 40px; border-bottom: 2px solid #920a19;}
+.onlineplForm .hd h3{width: 138px; float: left; _display: inline; text-align: center; height: 40px; line-height: 40px; background: #920a19; color: #fff; font-size: 16px;}
+.onlineplForm .hd .tips{float: left; _display: inline; padding-left: 20px; height: 40px; line-height: 40px; color: #920a19; font-size: 12px;}
+.onlineplForm .bd{padding: 30px 0px}
+.onlineplForm .bottombt{ overflow:hidden; height:40px; text-align:center;}
+.onlineplForm .bottombt .inputbutton{background: #920a19;vertical-align:middle;margin-right:20px;cursor:pointer;border:none;width: 120px;height:40px;font-size:16px;text-align:center;font-weight:bold;color:#fff;}
+.onlineplForm .bottombt .restButton{background:#d3d3d3;vertical-align:middle;border:none;cursor:pointer;width: 120px;height:40px;text-align:center;font-size:16px;font-weight:bold;color:#555;}
+.LetterInfoTable{width: 100%}
+.LetterInfoTable td{line-height: 24px; padding: 8px 5px; vertical-align: middle;}
+.LetterInfoTable td.tdlab{width: 100px; text-align: right;}
+.LetterInfoTable td input[type="text"],.LetterInfoTable textarea{ width:80%; border:#ccc solid 1px; color:#36C; height:20px; overflow:hidden; padding: 5px 0px 5px 5px}
+.LetterInfoTable textarea{  height: auto }
+.LetterInfoTable td select{height: 24px; line-height: 24px;}
+
+/* 写信须知 */
+.letterWritePage #xyBox{background: url(../img/bgletter.jpg) 50% 0px no-repeat #f2f2f2; min-height: 500px; padding: 50px 140px 80px 170px;}
+.letterWritePage #xyBox h3{font-size: 35px; color:#920a19; text-align: center; line-height: 52px; margin-bottom: 40px; }
+.letterWritePage #xyBox .info{font-size: 14px; line-height: 28px; height: 325px;overflow-y: auto;}
+.letterWritePage #xyBox .info p{padding: 6px 0px;}
+.letterWritePage #xyBox .center{ overflow:hidden; height:40px; text-align:center; padding-top: 50px;}
+.letterWritePage #xyBox .nextBtn{background: #920a19; vertical-align:middle; margin-right:20px; cursor:pointer; border:none; width:166px; height:40px; font-size:16px; text-align:center; font-weight:bold; color:#fff}
+.letterWritePage #xyBox .prevBtn{background:#d3d3d3;vertical-align:middle; border:none; cursor:pointer;width:75px; height:40px; text-align:center; font-size:16px; font-weight:bold; color:#555}
+.UserPublicStatus .inline{float:left;}
+.UserPublicStatus label{ margin-right:15px; }
+.emailbox input{float:left; margin-right:5px;}
+.field-error{clear: both;display:block;}
+
+/* 提交结果 */
+.letterResultPage .onlinepl_result { border: #E6E6E6 solid; border-width: 1px 0 0 1px; margin: 7px 0 30px; }
+.letterResultPage .onlinepl_result td { background: #fff; padding: 5px; border: #E6E6E6 solid; border-width: 0 1px 1px 0; line-height: 26px; }
+.letterResultPage .onlinepl_result .title td { background: #920a19; color: #fff; font-size: 16px; font-weight: bold; height: 40px; line-height: 40px; padding: 0px 0px 0px 10px; }
+.letterResultPage .onlinepl_result td.queryCode{ color:#ff0000; font-weight:bold; font-size:16px;}
+.letterResultPage .onlinepl_result .tdlab,
+.letterResultPage .onlinepl_result .strong { text-align: right; width: 15%; background: #F7F7F7; font-weight: bold; }
+.letterResultPage .onlinepl_result input[type="text"] { width: 90%; border: #E6E6E6 solid 1px; color: #920a19; height: 20px; overflow: hidden; }
+.letterResultPage .onlinepl_result textarea { width: 90%; border: #E6E6E6 solid 1px; color: #920a19; overflow: hidden; font: normal 12px/24px "宋体"; }
+
+/* 申请进度查询 */
+.applyFormQuery { background: #fff; padding: 3% 0; width: 80%; margin: 30px auto; font-size: 16px; }
+.applyFormQuery td { padding: 8px 0 }
+.applyFormQuery .tdlab { width: 40%; text-align: right; }
+.applyFormQuery input[type=text] { width: 56%; }
+.applyFormQuery .bot { text-align: left; }
+.applyFormQuery .bot a { margin: 0 }
+.applyFormQuery .required strong { color: #f00; margin-right: 5px; }
+.applyFormQuery .errorMessage { color: #f00; }
+.applyFormQuery table { width: 100%; border: 0; }
+
+/* 依申请、信访、咨询等通用 查询结果页样色 */
+.queryResult { width: 80%; margin: 30px auto; }
+.queryResult .mainBox { margin-bottom: 50px; }
+.queryResult .tit h3 { text-align: center; font-size: 38px; line-height: 2; margin-bottom: 30px; }
+.queryResult .tips { text-align: center; font-size: 16px; margin-bottom: 50px; border-top: 1px solid #ddd; padding: 50px 0 20px 0; }
+.queryResult .number { font-weight: bold; color: #f00 }
+
+
+/* 其它 */
+.inputclass input[type=text] { width: 56%; border: 1px solid #ccc; height: 30px; padding: 0 10px; }
+.validatecodeclass input[type=text] { width: 30%; float: left; margin-right: 10px; }
+.codeinp{float:left}
+.codeinp #ValidateCode{ width:150px; }
+.codeinp .validationcode{display:inline;}
+.bot { text-align: center; margin-top:30px }
+.bot a { background: #920a19; cursor: pointer; display: inline-block; height: 46px; line-height: 46px; padding: 0 10%; border: 0; color: #fff; border-radius: 2px; }

@@ -1,0 +1,40 @@
+﻿@*子分类咨询模板*@
+@inject LetterCategoryService LetterCategoryService
+@inject NodeService NodeService
+
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    int id = ViewBag.CategoryId ?? 0;
+    var letterCategory = LetterCategoryService.GetEntity(m => m.CategoryId == id);
+    var list = LetterCategoryService.GetChildren(5, letterCategory.Identifier);
+
+    ViewBag.bodyClass = "letterListPage";
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    ViewBag.NavigationIdentifier.Add("yzxx");
+    ViewBag.NavigationIdentifier.Add("xygk");
+    ViewBag.PageTitle = letterCategory.CategoryName + "_" + node?.NodeName + "_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.HeaderTitle = letterCategory.CategoryName;
+}
+@section header {
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/letterbox/css/letterbox.css" asp-append-version="true" rel="stylesheet" />
+}
+<div class="path">
+    @Power.Partial("位置导航", new { Node = node })&gt;<span>@letterCategory.CategoryName</span>
+</div>
+<!-- content S -->
+<div id="content">
+    <div class="mainBox">
+        <div class="mHd">
+            <div class="write">
+                <a href="@Power.Url.LetterBoxWriteUrl(letterCategory.CategoryId)"><i></i><span>我要咨询</span></a>
+            </div>
+            <ul>
+                <li class="on"><a>全部咨询</a></li>
+                <li><a href="@Power.Url.LetterBoxPublicityUrl(letterCategory.CategoryId)">公开咨询</a></li>
+            </ul>
+        </div>
+        <div class="mBd">
+            @Power.Partial("分类咨询列表", new { id = letterCategory.CategoryId })
+        </div>
+    </div>
+</div>

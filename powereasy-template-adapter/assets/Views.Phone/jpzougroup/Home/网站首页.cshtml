@@ -1,0 +1,62 @@
+﻿@*站点首页模板*@
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+}
+
+@section header {
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/home/css/index.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!--focusNews S-->
+<div id="focusNews" class="focusBox">
+    @Power.Partial("广告版位-焦点图", new{ PicTitle = false, ImageWidth = 720, ImageHeight = 536, Id= 189 })
+</div>
+
+<script language="javascript"> jQuery("#focusNews").slide({ mainCell:".bd ul",effect: "leftLoop",delayTime:800,interTime:4000,autoPlay:true});</script>
+
+<!-- content S -->
+<div id="content">
+
+
+
+<!-- 团队动态 -->
+    <div class="box boxType1" js-tab>
+        <div class="hd">
+            <ul>
+                <li class="on">@Power.Url.NodeLink("tddt")</li>
+            </ul>
+        </div>
+        <div class="bd">
+            <div class="in">
+                <ul class="infoList">
+                    @Power.ArticleList("文章标题列表" , new { Node="tddt", Count=5, TitleLength=110, showDate=true , DateFormat = "MM-dd" , Sort="Priority,PublishTime", RefNode = true })
+                </ul>
+            </div>
+        </div>
+        @Power.Url.NodeLink("tddt", "More>>", new { @class = "moreBtn" })
+    </div>
+
+       <!-- 加入我们 -->
+    <div class="box boxType1" js-tab>
+        <div class="hd">
+            <ul>
+                <li class="on">@Power.Url.NodeLink("jrwm")</li>
+            </ul>
+        </div>
+        <div class="bd">
+            @Power.Partial("节点配置信息", new { NodeIdentifier = "jrwm", DisplayType = 10, ContentLength = 0 })
+        </div>
+        @Power.Url.NodeLink("jrwm", "More>>", new { @class = "moreBtn" })
+    </div>
+
+</div>
+<!-- content E -->
+<script>
+    jQuery("[js-tab]")
+        .slide({
+            effect: "left",
+            mainCell: ".in",
+            startFun: function (i, c, s, t) { s.find(".moreBtn").attr("href", t.eq(i).find("a").attr("href")) }
+        });
+</script>
+

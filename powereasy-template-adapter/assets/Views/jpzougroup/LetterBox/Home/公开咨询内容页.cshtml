@@ -1,0 +1,153 @@
+﻿@*公开咨询详情页模板*@
+@inject NodeService NodeService
+@inject LetterCommentService LetterCommentService
+
+@Power.VisualizationView(new { Area = "LetterBox", Action = "Details"})
+@model Letter
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("xygk");
+    ViewBag.NavigationIdentifier.Add("yzxx");
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    ViewBag.PageTitle = "公开咨询内容页_" + this.Context.GetCurrentSite().SiteTitle;
+    var schedule = Model.LetterStatus != LetterStatus.Processed ? "处理中" : "已办理";
+    var letterCommentService = LetterCommentService;
+    bool commentLoginShow = letterCommentService.EnabledComment(Model.LetterId);
+    int commentCount = letterCommentService.GetAllCommentCount(Model.LetterId);
+}
+
+@section header {
+    <link href="~/content/_common/base/css/power-comment.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/letterbox/css/letterbox.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content">
+
+    <!-- side S -->
+    <aside class="side">
+        @Power.Partial("侧栏-通用", new { Node = node })
+    </aside>
+    <!-- side E -->
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+                <h3><span>公开咨询内容</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <div class="letterCon">
+                    <table class="detailTable" border="0" cellspacing="0" cellpadding="0">
+                        <thead>
+                        <tr>
+                            <th colspan="4">咨询情况</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="trTitle">
+                            <td class="tdName">标题</td>
+                            <td class="tdCon" colspan="3">@Model.Title</td>
+                        </tr>
+                        <tr class="trName">
+                            <td class="tdName">咨询人</td>
+                            <td class="tdCon">@Model.Name</td>
+                            <td class="tdName">咨询日期</td>
+                            <td class="tdCon">@Model.SubmitTime.ToString("yyyy-MM-dd")</td>
+                        </tr>
+                        <tr class="trSchedule">
+                            <td class="tdName">信件状态</td>
+                            <td class="tdCon" colspan="3">@schedule</td>
+                        </tr>
+                        <tr class="trContent">
+                            <td class="tdName">咨询内容</td>
+                            <td class="tdCon" colspan="3">
+                                <div class="preDiv"><pre>@Model.Content</pre></div>
+                            </td>
+                        </tr>
+                        @Power.Partial("便民咨询扩展字段列表页")
+                        </tbody>
+                    </table>
+                    @{
+                        var transactWays = string.Empty;
+                        foreach (var transactWay in Model.TransactWays)
+                        {
+                            transactWays += transactWay.TransactWayName + "，";
+                        }
+                        transactWays = transactWays.TrimEnd('，');
+                    }
+                    <table class="detailTable" border="0" cellspacing="0" cellpadding="0">
+                        <thead>
+                        <tr>
+                            <th colspan="4">回复情况</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="trUnit">
+                            <td class="tdName">回复单位</td>
+                            <td class="tdCon">@Model.ReplyUnit</td>
+                            <td class="tdName">办结日期</td>
+                            <td class="tdCon">
+                                @{
+                                    if (Model.FinishTime != null)
+                                    {
+                                        @Model.FinishTime.Value.ToString("yyyy-MM-dd")
+                                    }
+                                }
+                            </td>
+                        </tr>
+                        @if (Model.PublicizedReplyContent)
+                        {
+                            <tr class="letter_con">
+                                <td class="tdName">回复内容</td>
+                                <td class="tdCon" colspan="3">
+                                    @Model.ReplyContent.ToHtml()
+                                </td>
+                            </tr>
+                        }
+                        <tr>
+                            <td class="tdName">办理方式</td>
+                            <td class="tdCon" colspan="3">@transactWays</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                @if (commentLoginShow)
+                {
+                    <div class="commentForm">
+                        <h3 class="tips">
+                            <a href="@Url.Action("Comment", "LetterComment", new { id = Model.LetterId })" class="count" hidefocus="true"><span>@(commentCount)条评论</span></a>
+                            <span>文明上网理性发言</span>
+                        </h3>
+                        <div class="comments postComment">
+                            @Html.AntiForgeryToken()
+                            @Power.Partial("发表评论")
+                        </div>
+                    </div>
+                }
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<input type="hidden" id="letterid" value="@Model.LetterId" />
+<input type="hidden" id="urls" data-addcomment="@Url.Action("AjaxAddComment", "LetterComment")"
+       data-commentlist="@Url.Action("Comment", "LetterComment", new { id = Model.LetterId })" />
+<input type="hidden" id="modulename" value="LetterBox" />
+<input type="hidden" id="modulename" value="LetterBox" />
+<!-- content E -->
+
+@section scripts
+{
+    <script src="~/content/_common/base/js/power-comment-contentlogin.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/scripts/jquery.validate.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/scripts/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/scripts/i18n/jquery.validate.locale_zh.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/jquery.validate_custom.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/power.ui.captcha.js" asp-append-version="true"></script>
+}

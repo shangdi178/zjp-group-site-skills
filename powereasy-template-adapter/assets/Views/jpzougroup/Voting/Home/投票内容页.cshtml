@@ -1,0 +1,150 @@
+﻿@*投票内容页模板*@
+@inject NodeService NodeService
+@inject StringExtensionsHelper StringExtensionsHelper
+@inject StringExtensionsHelper StringExtensionsHelper
+
+@Power.VisualizationView(new { Area = "Voting", Action = "DetailsVisualizationView"})
+@model Vote
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("zxtp");
+    var node = NodeService.GetNodeByIdentifier("zxtp");
+    ViewBag.PageTitle = Model.Title + "_在线投票_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.bodyClass = "voteConPage";
+    bool isPreview = ViewBag.Preview ?? false;
+}
+@section header{
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/_common/voting/css/vote.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/_common/base/css/power-comment.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content" class="noSideContent">
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+                <h3><span>@node.NodeName</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                @if (!Model.FeaturedImage.IsEmpty())
+                {
+                    <div class="voteBanner">
+                        <img src="@StringExtensionsHelper.ToUrl(Model.FeaturedImage)" />
+                    </div>
+                }
+
+                <div class="votePost">
+                    <h4 class="voteTitle">@Model.Title</h4>
+                    @if (!Model.Description.IsEmpty())
+                    {
+                        <div class="voteDescription">@Model.Description.ToHtml()</div>
+                    }
+                    <div id="voteItems">
+                        <ul>
+                            @foreach (var item in Model.VoteItems.OrderBy(x => x.Order))
+                            {
+                                <li>
+                                    @if (Model.VoteType == VoteType.Single)
+                                    {
+                                        <input type="radio" data-type="item" name="item" value="@item.VoteItemId" />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" data-type="item" name="item" value="@item.VoteItemId" />
+                                    }
+                                    @if (string.IsNullOrEmpty(item.VoteItemTitleLink))
+                                    {
+                                        <span class="itemTitle">@item.Title</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="itemTitle"><a href="@item.VoteItemTitleLink" target="_blank">@item.Title</a> </span>
+                                    }
+
+
+                                    @if (!string.IsNullOrWhiteSpace(item.FeaturedImage) || !string.IsNullOrWhiteSpace(item.Description))
+                                    {
+                                        <i class="showMore"></i>
+                                        <div class="itemCon">
+                                            @if (!string.IsNullOrWhiteSpace(item.FeaturedImage))
+                                            {
+                                                <div class="pic">@Html.DisplayFor(m => item.FeaturedImage)</div>
+                                            }
+                                            @if (!string.IsNullOrWhiteSpace(item.Description))
+                                            {
+                                                <div class="intro">@item.Description.ToHtml()</div>
+                                            }
+                                        </div>
+                                    }
+
+                                    @if (Model.EnabledComment)
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <div class="voteComment">
+                                            <button class="showVoteComment">评论</button>
+                                            <div class="votecomments postComment">
+                                                @Power.Partial("发表评论", new { commentId = item.VoteItemId })
+                                                <div class="comments votecommentlist_@(item.VoteItemId)">
+                                                    @Power.Partial("投票评论列表", new { sourceId = item.VoteItemId })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    @using (Html.BeginForm("SubmitVoteResult", "home"))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="VoteId" value="@Model.VoteId" />
+                        if (Model.EnableCaptcha)
+                        {
+                            <div class="code">
+                    @Power.Control.Captcha()
+                </div>
+                        }
+                        <div class="tips">
+                            <span class="field-validation-error" data-valmsg-for="ValidateCode" data-valmsg-replace="true">&nbsp;</span>
+                        </div>
+                        if (!isPreview)
+                        {
+                            <div class="submit">
+                                <input type="submit" class="voteBtn" id="submitbut" value="提交" />
+                                <a href="@Url.Action("List")">返回列表</a>
+                                @if (Model.EnablePublic)
+                                {
+                                    <a href="@this.ViewBag.StatisticsUrl">查看结果</a>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+
+                <input type="hidden" id="voteurls" data-addcomment="@Url.Action("AjaxAddComment", "VoteComment")"
+                       data-deletecomment="@Url.Action("AjaxDeleteComment", "VoteComment")" />
+                <input type="hidden" class="isauthenticated" data-isauthenticated="@User.Identity.IsAuthenticated" />
+                <input type="hidden" class="voteenableAnonymous" data-enableAnonymous="@Model.EnableAnonymous" />
+                <input type="hidden" name="RefreshPage" />
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->
+
+@section scripts
+{
+    <script src="~/content/_common/voting/js/vote.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/scripts/jquery.validate.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/scripts/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/jquery.validate_custom.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/power.ui.captcha.js" asp-append-version="true"></script>
+}

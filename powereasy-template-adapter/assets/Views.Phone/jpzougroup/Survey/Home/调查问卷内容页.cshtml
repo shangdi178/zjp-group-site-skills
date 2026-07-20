@@ -1,0 +1,32 @@
+﻿@*问卷调查内容页模板*@
+@inject NodeService NodeService
+@inject StringExtensionsHelper StringExtensionsHelper
+
+@model QuestionnaireViewModel
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.bodyClass = "surveyConPage";
+    var node = NodeService.GetNodeByIdentifier("wjtc");
+    ViewBag.PageTitle = Model.Questionnaire.QuestionnaireTitle + "_" + node.NodeName + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.HeaderTitle = node.NodeName;
+}
+@section header
+{
+    @Power.Partial("问卷内容页css")
+}
+
+<div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+
+<!-- content S -->
+<div id="content">
+
+
+    @Power.Partial("问卷表单", new { QuestionnaireViewModel = Model })
+    @section scripts
+    {
+        @Power.Partial("问卷内容页js")
+    }
+
+
+</div>
+<!-- content E -->

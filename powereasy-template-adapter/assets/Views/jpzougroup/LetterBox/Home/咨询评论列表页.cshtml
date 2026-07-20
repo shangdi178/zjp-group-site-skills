@@ -1,0 +1,79 @@
+﻿@*评论列表页模板*@
+@inject NodeService NodeService
+@inject LetterCommentService LetterCommentService
+
+@Power.VisualizationView(new { Area = "LetterBox", Action = "Comment"})
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("xygk");
+    ViewBag.NavigationIdentifier.Add("yzxx");
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    int sourceId = ViewBag.sourceId;
+    ViewBag.PageTitle = "评论列表_" + this.Context.GetCurrentSite().SiteTitle;
+    var service = LetterCommentService;
+    int commentCount = service.GetAllCommentCount(sourceId);
+}
+
+@section header{
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/_common/base/css/power-comment.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content" class="noSideContent">
+
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })&gt;<span>评论列表</span></div>
+                <h3><span>评论列表</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <div class="commentForm commentFormPage">
+                    <h3 class="commentTitle"><a target="_blank" href="@Url.Action("Details", "home", new { id = sourceId })">@ViewBag.Title</a></h3>
+                    <div class="tips">
+                        <a href="javascript:void(0)" class="count" hidefocus="true"><span>@(commentCount)条评论</span></a>
+                        <span>文明上网理性发言</span>
+                    </div>
+                    <div class="comments postComment">
+                        @Html.AntiForgeryToken()
+                        @Power.Partial("发表评论", new { commentId = 0, sourceId })
+                    </div>
+                    <div class="hotComments">
+                        <h3 class="title">热门评论</h3>
+                        <div class="comments commentlist">
+                            @Power.Partial("评论回复列表", new { sourceId, outputcount = 5, replyId = 0, usedpage = false })
+                        </div>
+                    </div>
+                    <div class="newComments">
+                        <h3 class="title">最新评论</h3>
+                        <div class="comments treecomment">
+                            @Power.Partial("评论回复列表", new { sourceId, outputcount = 5, replyId = 0, usedpage = true, order = 3 })
+                        </div>
+                    </div>
+                </div>
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->
+<input type="hidden" id="urls" data-deletecomment="@Url.Action("DeleteComment", "LetterComment")"
+       data-addcomment="@Url.Action("AjaxAddComment", "LetterComment")" />
+<input type="hidden" id="letterid" value="@sourceId" />
+<input type="hidden" id="modulename" value="LetterBox" />
+<input type="hidden" name="RefreshPage" />
+@section scripts
+{
+    <script src="~/content/_common/base/js/power-commentlist.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/scripts/jquery.validate.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/scripts/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/scripts/i18n/jquery.validate.locale_zh.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/jquery.validate_custom.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/power.ui.captcha.js" asp-append-version="true"></script>
+}

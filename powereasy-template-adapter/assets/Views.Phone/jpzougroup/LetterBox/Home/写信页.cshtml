@@ -1,0 +1,251 @@
+﻿@*默认写信页模板*@
+@inject LetterTypeService LetterTypeService
+@inject LetterCategoryService LetterCategoryService
+@inject NodeService NodeService
+@inject SiteLetterBoxConfigService SiteLetterBoxConfigService
+@inject LetterCategoryExtendFieldService LetterCategoryExtendFieldService
+
+@model LetterViewModel
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    var letterTypeList = LetterTypeService.GetSelectListItems();
+    int letterCategoryId = 0;
+    if (ViewBag.categoryId != null)
+    {
+        letterCategoryId = ViewBag.categoryId;
+    }
+    else
+    {
+        letterCategoryId = LetterCategoryService.GetFirstOrDefaultCategory().CategoryId;
+    }
+    var letterCategory = LetterCategoryService.GetEntity(m => m.CategoryId == letterCategoryId);
+    IEnumerable<SelectListItem> currentCategorys = LetterCategoryService.GetMany(m => m.Left > letterCategory.Left && m.Right < letterCategory.Right && m.SiteId == SiteContext.Current.SiteId && m.Enable).BuildList(m => m.CategoryName, m => m.CategoryId);
+
+    ViewBag.bodyClass = "letterWritePage";
+
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    ViewBag.PageTitle = "写信页_" + node?.NodeName + "_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.HeaderTitle = "写信页";
+    var notice = SiteLetterBoxConfigService.Notice();
+    var extendFields = LetterCategoryExtendFieldService.GetMany(o => o.MoldId == Model.LetterCategoryMoldId).ToList();
+    if (string.IsNullOrWhiteSpace(notice))
+    {
+        notice = LetterBoxConfig.Instance.Notice;
+    }
+}
+
+@section header {
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/letterbox/css/letterbox.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/_common/base/css/power.phonemessagevalidate.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">
+    @Power.Partial("位置导航", new { Node = node })
+    @if (letterCategoryId > 0)
+    {
+        <label>&gt;@letterCategory.CategoryName</label>
+    }
+</div>
+
+<!-- content S -->
+<div id="content">
+
+    <!-- 正文内容 S -->
+    <div id="xyBox">
+        <h3>写信须知</h3>
+        <div class="info">
+            @Power.Url.ReplaceUploadPath(notice).ToHtml()
+        </div>
+        <div class="center">
+            <input type="button" id="rulesubmit" class="nextBtn" value="同意并进入下一步" style="cursor: pointer;">
+            <input type="button" class="prevBtn" onclick="javascript:history.back();" value="不同意">
+        </div>
+    </div>
+    <div id="formBox" style="display: none;">
+        <form name="form1" method="post" action="@Context.Request.Path" id="form1">
+            @Html.AntiForgeryToken()
+            <div class="onlineplForm">
+                <div class="hd"><h3>咨询人信息</h3><span class="tips">（注意：标有<i>*</i>的必须填写）</span></div>
+                <div class="bd">
+                    <table class="LetterInfoTable" border="0" cellpadding="0" cellspacing="0">
+                        <tbody>
+                        <tr>
+                            <td class="tdlab"><span style="color: Red;">* </span>姓名：</td>
+                            <td>
+                                @Html.EditorFor(m => m.Name)
+                                <span class="field-validation-valid field-error" data-valmsg-for="Name" data-valmsg-replace="true" style="color: Red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlab"><span style="color: Red;">* </span>昵称：</td>
+                            <td>
+                                @Html.EditorFor(m => m.Nickname)
+                                <span class="field-validation-valid field-error" data-valmsg-for="Nickname" data-valmsg-replace="true" style="color: Red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlab">职业：</td>
+                            <td> @Html.EditorFor(m => m.Profession) </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlab">身份证号：</td>
+                            <td>
+                                @Html.EditorFor(m => m.IdentityNumber)
+                                <span class="field-validation-valid field-error" data-valmsg-for="IdentityNumber" data-valmsg-replace="true" style="color: Red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlab"><span style="color: Red;">* </span>联系电话：</td>
+                            <td>
+                                @Html.EditorFor(m => m.Telephone)
+                                <span class="field-validation-valid field-error" data-valmsg-for="Telephone" data-valmsg-replace="true" style="color: Red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlab"><span style="color: Red;">* </span>电子邮件： </td>
+                            <td>
+                                @Html.EditorFor(m => m.Email)
+                                <span class="field-validation-valid field-error" data-valmsg-for="Email" data-valmsg-replace="true" style="color: Red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlab">联系地址：</td>
+                            <td colspan="3">
+                                @Html.EditorFor(m => m.Address)
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="hd"><h3>咨询事项信息</h3><span class="tips">（注意：标有<i>*</i>的必须填写）</span></div>
+                <div class="bd">
+                    <table class="LetterInfoTable" border="0" cellpadding="0" cellspacing="0">
+                        <tbody>
+                        <tr>
+                            <td class="tdlab"><span style="color: Red;">* </span>标题：</td>
+                            <td colspan="3">
+                                @Html.EditorFor(m => m.Title)
+                                <span class="field-validation-valid field-error" data-valmsg-for="Title" data-valmsg-replace="true" style="color: Red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlab"><span style="color: Red;">* </span>内容：</td>
+                            <td colspan="3">
+                                @Html.EditorFor(m => m.Content)
+                                <span class="field-validation-valid field-error" data-valmsg-for="Content" data-valmsg-replace="true" style="color: Red;"></span>
+                            </td>
+                        </tr>
+                        @foreach (var item in extendFields)
+                        {
+                            <tr>
+                                <td class="tdlab">
+                                    @if (item.IsRequired)
+                                    {
+                                        <span style="color: Red;">* </span>
+                                    }
+                                    @item.ExtendFieldDisplayName：
+                                </td>
+                                <td colspan="3">
+                                    @Html.EditorForExtendField(item.ExtendFieldName)
+                                    @Html.ValidationMessageForExtendField(item.ExtendFieldName)
+                                </td>
+                            </tr>
+                        }
+                        <tr>
+                            <td class="tdlab"><span style="color: Red;">* </span>咨询类型：</td>
+                            <td colspan="3">
+                                @Html.DropDownListFor(m => m.LetterTypeId, letterTypeList, new { })
+                                <span class="field-validation-valid field-error" data-valmsg-for="LetterTypeId" data-valmsg-replace="true" style="color: Red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlab"><span style="color: Red;">* </span>信件分类：</td>
+                            <td colspan="3">
+                                @Html.DropDownListFor(m => m.CategoryId, currentCategorys, new { })
+                                <span class="field-validation-valid field-error" data-valmsg-for="CategoryId" data-valmsg-replace="true" style="color: Red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlab"><span style="color: Red;">* </span>愿意公开：</td>
+                            <td colspan="3" class="UserPublicStatus">
+                                @Html.EditorFor(m => m.UserPublicStatus)
+                                <span class="field-validation-valid field-error" data-valmsg-for="UserPublicStatus" data-valmsg-replace="true" style="color: Red;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlab"><span style="color: Red;">* </span>验证码：</td>
+                            <td colspan="3">
+                                @Html.EditorFor(m => m.ValidateCode)
+                                <span class="field-validation-valid field-error" data-valmsg-for="ValidateCode" data-valmsg-replace="true" style="color: Red;"></span>
+                            </td>
+                        </tr>
+                        @if (ViewBag.EnablePhoneMessageValidate)
+                        {
+                            <tr>
+                                <td class="tdlab"><span style="color: Red;">* </span>短信验证：</td>
+                                <td colspan="3">
+                                    @Html.EditorFor(m => m.PhoneMessageValidateCode)
+                                    <span class="field-validation-valid field-error" data-valmsg-for="PhoneMessageValidateCode" data-valmsg-replace="true" style="color: Red;"></span>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bottombt">
+                    <input type="submit" name="BtnAdd" value="提交" id="BtnAdd" class="inputbutton" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <input id="BtnCancel" class="restButton" name="BtnCancel" type="reset" value="重置">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    @section scripts{
+        <script src="~/content/_common/assets/scripts/jquery.validate.js" asp-append-version="true"></script>
+        <script src="~/content/_common/assets/scripts/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+        <script src="~/content/_common/assets/scripts/i18n/jquery.validate.locale_zh.js" asp-append-version="true"></script>
+        <script src="~/content/_common/base/js/jquery.validate_custom.js" asp-append-version="true"></script>
+        <script src="~/content/_common/base/js/power.ui.js" asp-append-version="true"></script>
+        <script src="~/content/_common/base/js/power.ui.captcha.js" asp-append-version="true"></script>
+        @if (ViewBag.EnablePhoneMessageValidate)
+        {
+            <script src="~/content/_common/base/js/power.phonemessagevalidate.js" asp-append-version="true"></script>
+        }
+
+        <script language="javascript">
+            (function () {
+                var secs = 3;
+                var t = setInterval(function () {
+                        $("#rulesubmit").val("请阅读内容(" + secs-- + ")");
+                        if (secs < 0) {
+                            clearInterval(t);
+                            $("#rulesubmit")
+                                .val("同意并进入下一步")
+                                .css({ cursor: "pointer" })
+                                .click(function () {
+                                    $("#formBox").show();
+                                    $("#xyBox").hide();
+                                    $('input:radio[name="UserPublicStatus"]')[0].checked = true;
+                                });
+                        }
+                    },
+                    1000);
+            })();
+            $(function () {
+                $("#CategoryId")
+                    .append("<option select='selected' style='display:none' value=" +
+                        '@(letterCategory.CategoryId)' +
+                        ">" +
+                        '未选择' +
+                        "</option>");
+                $("#CategoryId").val('@(letterCategory.CategoryId)');
+            });
+        </script>
+    }
+
+    <!-- 正文内容 E -->
+
+</div>
+<!-- content E -->

@@ -1,0 +1,35 @@
+﻿@*投票列表页模板*@
+@inject VoteService VoteService
+@inject NodeService NodeService
+
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.bodyClass = "voteListPage";
+    var votes = VoteService.GetVoteList(10);
+    var node = NodeService.GetNodeByIdentifier("zxtp");
+    ViewBag.PageTitle = node.NodeName + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.HeaderTitle = node.NodeName;
+}
+
+@section header{
+    <link href="~/content.phone/_common/voting/css/vote.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+<!-- content S -->
+<div id="content">
+    <div class="mainBox">
+        <div class="mHd">
+            <h3>投票列表</h3>
+        </div>
+        <div class="mBd">
+            <!-- 正文内容 S -->
+            <div class="voteCommonList">
+                @Power.Partial("投票列表", new { Count = 10, Paging = true, ShowDate = true, ShowButton = true })
+            </div>
+            <div class="page">@Power.Partial("通用分页")</div>
+            <!-- 正文内容 E -->
+        </div>
+    </div>
+</div>
+<!-- content E -->

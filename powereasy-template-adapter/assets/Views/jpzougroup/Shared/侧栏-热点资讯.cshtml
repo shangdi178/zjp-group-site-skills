@@ -1,0 +1,48 @@
+﻿@inject NodeService NodeService
+@inject ContentMoldService ContentMoldService
+@Power.VisualizationPartialView(new
+{
+    Description = "侧栏-热点资讯",
+    Parameters = new
+    {
+        Node = new { DisplayName = "节点实体", Type = "String", DefaultValue = "null" },
+        NodeId = new { DisplayName = "节点Id", Type = "Int32", DefaultValue = 0 }
+    }
+})
+@{
+    var nodeId = Param.NodeId ?? 0;
+    var node = Param.Node ?? null;
+    int moldId = 0;
+
+    if (node == null && nodeId != 0)
+    {
+        node = NodeService.GetEntity(nodeId);
+    }
+
+    moldId = node.MoldId == null ? 0 : node.MoldId;
+    var moldType = node.MoldId == null ? null : ContentMoldService.GetEntity(moldId)?.MoldType;
+}
+@if (node != null)
+{
+    <div id="sideRmph" class="sideBox">
+        <div class="hd">
+            <h3><span>热点资讯</span></h3>
+        </div>
+        <div class="bd">
+            <ul class="infoListB">
+                @if (moldType == MoldType.Photo)
+                {
+                    @Power.PhotoList("图片标题列表", new { Count = 5, node, TitleLength = 48, DateFormat = "MM-dd", Sort = "Hits", RefNode = true })
+                }
+                else if (moldType == MoldType.Video)
+                {
+                    @Power.VideoList("视频标题列表", new { Count = 5, node, TitleLength = 48, DateFormat = "MM-dd", Sort = "Hits", RefNode = true })
+                }
+                else
+                {
+                    @Power.ArticleList("文章标题列表", new { Count = 5, node, TitleLength = 48, DateFormat = "MM-dd", Sort = "Hits", RefNode = true })
+                }
+            </ul>
+        </div>
+    </div>
+}

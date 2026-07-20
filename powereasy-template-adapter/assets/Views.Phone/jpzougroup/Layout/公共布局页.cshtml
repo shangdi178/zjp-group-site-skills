@@ -1,0 +1,35 @@
+﻿
+@{
+    Layout = "~/Views.Phone/_Common/Layout/基础布局页.cshtml";
+}
+@section meta{ @RenderSection("meta", false) }
+@section header{
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/base/css/default.css" asp-append-version="true" rel="stylesheet" type="text/css" />
+    @RenderSection("header", false)
+}
+@section scripts{
+    @RenderSection("scripts", false)
+        <script src="~/content/_common/base/js/power.ui.captcha.js" asp-append-version="true"></script>
+}
+<div class="wrap">
+    @if (IsSectionDefined("top"))
+    {
+        @RenderSection("top")
+    }
+    else
+    {
+        @Power.Partial("网站顶部")
+        @Power.Partial("搜索验证码弹出窗")
+    }
+    @RenderBody()
+
+    @if (IsSectionDefined("bottom"))
+    {
+        @RenderSection("bottom")
+    }
+    else
+    {
+        @Power.Partial("网站底部")
+    }
+</div>
+@Power.Partial("短信邮箱图形验证码弹出窗")

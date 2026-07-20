@@ -1,0 +1,74 @@
+﻿@*分类首页模板*@
+@inject LetterCategoryService LetterCategoryService
+@inject NodeService NodeService
+
+@Power.VisualizationView(new { Area = "LetterBox", Action = "LetterCategoryIndex"})
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+
+    int categoryId = ViewBag.CategoryId ?? 0;
+    List<LetterCategory> letterCategorys = new List<LetterCategory>();
+    LetterCategory letterCategory = null;
+    if (categoryId > 0)
+    {
+        letterCategory = LetterCategoryService.GetEntity(m => m.CategoryId == categoryId);
+        letterCategorys = LetterCategoryService.GetChildren(5, letterCategory.Identifier);
+    }
+    else
+    {
+        letterCategorys = LetterCategoryService.GetChildren(5);
+    }
+    ViewBag.bodyClass = "letterListPage";
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    ViewBag.NavigationIdentifier.Add("xygk");
+    ViewBag.NavigationIdentifier.Add("yzxx");
+    ViewBag.PageTitle = letterCategory.CategoryName + "_" + node?.NodeName + "_" + this.Context.GetCurrentSite().SiteTitle;
+}
+@section header {
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/letterbox/css/letterbox.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content">
+    <!-- side S -->
+    <aside class="side">
+        @Power.Partial("侧栏-通用", new { Node = node })
+    </aside>
+    <!-- side E -->
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })@if (letterCategory != null){<label> &gt; @letterCategory.CategoryName</label>}</div>
+                <h3><span>@node?.NodeName</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <div class="pageBoxLoop1">
+                @if (letterCategorys != null)
+                {
+                    foreach (var item in letterCategorys)
+                    {
+                        <div class="pageBox">
+                            <div class="hd ">
+                                <a href="@Power.Url.LetterBoxWriteUrl(item.CategoryId)" class="more">我要咨询</a>
+                                <h3><a href="@Power.Url.LetterBoxListUrl(item.CategoryId)">@item.CategoryName</a></h3>
+                            </div>
+                            <div class="bd">
+                                @Power.Partial("分类咨询列表", new { id = item.CategoryId, count = 5, fromIndex = true })
+                            </div>
+                        </div>
+                    }
+                }
+                </div>
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->
+

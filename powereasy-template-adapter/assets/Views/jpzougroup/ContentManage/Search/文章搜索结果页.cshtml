@@ -1,0 +1,41 @@
+﻿@*搜索结果页模板*@
+
+
+@Power.VisualizationView(new { Area = "ContentManage", Controller = "Node"})
+@model Node
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+}
+@section header {
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content">
+    <!-- side S -->
+    <aside class="side">
+        @Power.Partial("侧栏-通用", new { Node = Model })
+    </aside>
+    <!-- side E -->
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = Model })</div>
+                <h3><span>“@(ViewBag.Keyword ?? "关键字")”搜索结果</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <ul class="newsList">
+                    @Power.ArticleList("文章标题列表", new { Paging = true, Node = Model, ShowDate = true, Count = 10, DisplayNodeName = true, KeyWord = ViewBag.Keyword ?? string.Empty, TitleLength = 200, ContentLength = 180, DisplayDateTime = "发表时间：yyyy-MM-dd", ImageWidth = 180, ImageHeight = 110, RefNode = true })
+                </ul>
+                <div class="page">@Power.Partial("通用分页")</div>
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->

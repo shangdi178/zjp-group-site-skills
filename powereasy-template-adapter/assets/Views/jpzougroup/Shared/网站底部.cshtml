@@ -1,0 +1,15 @@
+﻿
+@Power.VisualizationPartialView(new
+{
+    Description = "网站底部"
+})
+<!-- footer S -->
+<footer id="footer">
+    <div class="siteWidth">
+      <!-- <ul class="links">@Power.Partial("节点列表", new { Count=99,NodeIdentifier = "qt" }) </ul> -->
+        <div class="copyRight">
+			@this.Context.GetCurrentSite().Copyright.ToHtml()
+		</div>
+    </div>
+</footer>
+<!-- footer E -->

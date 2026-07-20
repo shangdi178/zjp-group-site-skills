@@ -1,0 +1,25 @@
+﻿@*单页模板*@
+@inject NodeInterfaceExtend NodeInterfaceExtend
+@model Node
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.HeaderTitle = Model.NodeName;
+}
+
+@section header {
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">@Power.Partial("位置导航", new { Node = Model })</div>
+<!-- content S -->
+<div id="content">
+    @Power.Partial("节点归档图标", new { Node = Model })
+    @NodeInterfaceExtend.NodeHits(Model)
+    <!-- 正文内容 S -->
+    <ul class="siteMap">
+        @Power.Partial("网站地图")
+    </ul>
+    <!-- 正文内容 E -->
+
+</div>
+<!-- content E -->

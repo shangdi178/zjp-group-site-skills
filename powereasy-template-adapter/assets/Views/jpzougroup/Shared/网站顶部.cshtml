@@ -1,0 +1,25 @@
+﻿@inject StringExtensionsHelper StringExtensionsHelper
+@inject SiteService SiteService
+@Power.VisualizationPartialView(new
+{
+    Description = "网站顶部"
+})
+@{
+    var currentSite = SiteService.CurrentSite();
+}
+
+<!-- header S -->
+<header id="header">
+    <div class="siteWidth">
+        @Power.Partial("网站搜索")
+        <h1 class="logo" title="@this.Context.GetCurrentSite().SiteTitle">
+            <a href="@Power.Url.SiteUrl(currentSite.Subdomain)"><img src="@StringExtensionsHelper.ToUrl(this.Context.GetCurrentSite().LogoUrl)" /></a>
+        </h1>
+        <div class="nav">
+            @Power.Partial("节点导航", new{ Count = 7,Splitchar = true, Depth = 1,effect="slideDown"})
+        </div>
+    </div>
+
+</header>
+<!-- header E -->
+

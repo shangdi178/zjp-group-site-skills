@@ -1,0 +1,62 @@
+﻿@*内容页模板*@
+@inject ArticleExtend ArticleExtend
+@model Article
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    var service = ArticleService;
+    ViewBag.HeaderTitle = Model.Node.NodeName;
+}
+
+@section header {
+    <link href="~/content/_common/base/css/power-comment.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">@Power.Partial("位置导航", new { Model.Node })&gt;<span>详细内容</span></div>
+<!-- content S -->
+<div id="content">
+    @Power.Partial("内容归档图标", new { Model.Archived, Model.ArchivedTime })
+    <!-- 正文内容 S -->
+    <article class="articleCon">
+        <div class="printArea" data-power-area='content'>
+            <!-- 标题 -->
+            <h2 class="title">
+                @Model.Title().SetFontStyle(Model.TitleColor, Model.TitleFontStyle)
+                <div class="subheading">@Model.Subheading</div>
+            </h2>
+            <div class="property">
+                <span>@Model.PublishTime.ToString("yyyy-MM-dd HH:mm:ss")</span><span>@Model.CopyFrom</span><span>浏览：@ContentInterfaceExtendHelper.Hits(Model) 次</span><span class="size"><a href="javascript:;" data-power-command="reducefont" class="s">T</a> <a href="javascript:;" data-power-command="enlargefont" class="l">T</a></span>
+            </div>
+            <!-- 正文 -->
+            <div class="conTxt" data-power-defaultFontSize="16" data-power-defaultLineHeight="2" data-power-imgMaxWidth="800">
+                @ArticleExtend.Content(Model,"720p")
+            </div>
+        </div>
+        @Power.Partial("文章内容分页")
+        @Power.Partial("点赞收藏", new { contentId = Model.ContentId })
+        @Power.Partial("智能标签", new { Content = Model })
+        @Power.Partial("相关内容", new { Model.ContentId, Model.NodeId, TitleLength = 200 })
+        @*@Power.Partial("文章签收用户列表", new { Model })*@
+        <div class="userControl">
+            @Power.Partial("分享按钮", new { Size = 32 })
+        </div>
+        @if (Model.EnabledComment && Model.IsApprove())
+        {
+            @Power.Partial("文章评论区块")
+        }
+        @Power.Partial("内容页-上下篇", new { Model.ContentId, Unit = "条" })
+        @*@Power.Partial("学习记录页", new { Model.ContentId, Model.NodeId })*@
+@inject ArticleService ArticleService
+@inject ContentInterfaceExtendHelper ContentInterfaceExtendHelper
+
+    </article>
+    <!-- 正文内容 E -->
+</div>
+@Power.Partial("文章签收确认框", new { Content = Model })
+<!-- content E -->
+@Power.Partial("视频下载")
+@section scripts{
+    <script src="~/content/_common/assets/scripts/jquery.PrintArea.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/ueditor/ueditor.parse.min.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/article.js" asp-append-version="true"></script>
+}

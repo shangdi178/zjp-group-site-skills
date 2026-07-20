@@ -1,0 +1,62 @@
+﻿@*列表页模板*@
+@inject NodeService NodeService
+
+@Power.VisualizationView(new { Area = "ContentManage", Controller = "Node"})
+@model Node
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+}
+@section header {
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content">
+    <!-- side S -->
+    <aside class="side">
+        @Power.Partial("侧栏-通用", new { Node = Model , ShowHotNews = true})
+    </aside>
+    <!-- side E -->
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = Model })</div>
+                <h3><span>@Model.NodeName</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <!-- 栏目循环 S -->
+                <div class="pageBoxLoop1">
+                @{
+                    var nodeService = NodeService;
+                    var childNodes = nodeService.GetChildNodeList(Model).Take(999);
+                    var index = 1;
+                    foreach (Node childNode in childNodes.Where(n => n.ShowOnParentNodeList))
+                    {
+                        <!--模块开始-->
+                        <div class="box">
+                            <div class="hd ">
+                                @Power.Url.NodeLink(childNode.Identifier, "更多>>",new { @class="more" })
+                                <h3>@Power.Url.NodeLink(childNode.Identifier)</h3>
+                            </div>
+                            <div class="bd">
+                                <ul class="picListFl">
+                                    @Power.PhotoList("图片列表", new { Node = childNode, Count=4, Sort = "Priority,PublishTime", TitleLength = 100, ImageWidth = 205, ImageHeight = 154, RefNode = true })
+                                </ul>
+                            </div>
+                        </div>
+                        <!--模块结束-->
+                    }
+                }
+                </div>
+                <!-- 栏目循环 E -->
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->

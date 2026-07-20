@@ -1,0 +1,67 @@
+﻿@*列表页模板*@
+@inject NodeService NodeService
+@inject NodeInterfaceExtend NodeInterfaceExtend
+
+@model Node
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.HeaderTitle = Model.NodeName;
+}
+
+@section header {
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">@Power.Partial("位置导航", new { Node = Model })</div>
+<!-- content S -->
+<div id="content">
+    @Power.Partial("节点归档图标", new { Node = Model })
+    @NodeInterfaceExtend.NodeHits(Model)
+    <!-- 焦点图 S -->
+    <div id="focusNews" class="focusBox">
+        @Power.Partial("文章焦点图", new { Count = 5, NodeIdentifier = Model.Identifier, TitleLength = 60, PicTitle = false, imageWidth = 720, imageHeight = 450, Sort = "Priority DESC,PublishTime DESC" })
+    </div>
+    <script> jQuery("#focusNews").slide({ mainCell: ".bd ul", effect: "leftLoop", autoPlay: true });</script>
+    <!-- 焦点图 E -->
+    <!-- 正文内容 S -->
+    <div class="boxLoop">
+
+        @{
+            var nodeService = NodeService;
+            var childNodes = nodeService.GetChildNodeList(Model).Take(999);
+        }
+
+        @foreach (Node childNode in childNodes.Where(n => n.ShowOnParentNodeList))
+        {
+            <div class="mainBox">
+                <div class="mHd">
+                    <h3 class="title">@Power.Url.NodeLink(childNode.Identifier)</h3>
+                </div>
+                <div class="mBd">
+                    @if (childNode.MoldId == 2)
+                    {
+                        <ul class="picListFl">
+                            @Power.PhotoList("图片列表", new { Count = 4, Node = childNode.Identifier, TitleLength = 60, RefNode = true })
+                        </ul>
+                    }
+                    else if (childNode.MoldId == 3)
+                    {
+                        <ul class="infoList">
+                            @Power.VideoList("视频标题列表", new { Count = 6, Node = childNode.Identifier, TitleLength = 112, DateFormat = "MM-dd", RefNode = true })
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="infoList">
+                            @Power.ArticleList("文章标题列表", new { Count = 6, Node = childNode.Identifier, TitleLength = 112, DateFormat = "MM-dd", RefNode = true })
+                        </ul>
+                    }
+                    <a class="moreBtn" href='@Power.Url.NodeUrl(childNode.Identifier)'>查看更多&gt;&gt;</a>
+                </div>
+            </div>
+        }
+    </div>
+    <!-- 正文内容 E -->
+
+</div>
+<!-- content E -->

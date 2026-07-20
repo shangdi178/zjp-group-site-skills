@@ -1,0 +1,43 @@
+﻿@*问卷调查内容页模板*@
+@inject NodeService NodeService
+@inject StringExtensionsHelper StringExtensionsHelper
+
+@Power.VisualizationView(new { Area = "Survey", Action = "DetailsVisualizationView" })
+@model QuestionnaireViewModel
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("wjtc");
+    var node = NodeService.GetNodeByIdentifier("wjtc");
+    ViewBag.PageTitle = Model.Questionnaire.QuestionnaireTitle + "_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.bodyClass = "surveyConPage";
+}
+@section header
+{
+    @Power.Partial("问卷内容页css")
+}
+
+<!-- content S -->
+<div id="content" class="noSideContent">
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+                <h3><span>@(node?.NodeName)</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                @Power.Partial("问卷表单", new { QuestionnaireViewModel = Model })
+                @section scripts
+                {
+                    @Power.Partial("问卷内容页js")
+                }
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->

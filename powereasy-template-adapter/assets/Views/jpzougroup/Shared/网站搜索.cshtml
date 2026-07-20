@@ -1,0 +1,138 @@
+﻿@inject SiteHelperBusiness SiteHelperBusiness
+@Power.VisualizationPartialView(new
+{
+    Description = "网站搜索"
+})
+@{
+    var fulltextSearchRoute = FulltextSearchConfig.Instance.Route;
+}
+
+<link href="~/content/_common/search/css/modal.css" asp-append-version="true" rel="stylesheet" />
+
+<div class="s-form">
+    <div class="input-box">
+        <input type="text" class="from-control" id="inputkeyword" maxlength="50" name="wd" data-url="@SiteHelperBusiness.GetSiteUrl(SiteContext.Current.SiteId).TrimEnd('/')/@FulltextSearchConfig.Instance.Route?ac=w" placeholder="请输入关键词" autocomplete="off" spellcheck="false">
+        <div class="dropdown-word">
+            <ul></ul>
+        </div>
+    </div>
+    <div class="btn-box">
+        <input type="hidden" id="loweridentifier" name="lsi" value="">
+        <a class="searchBtn" href="javascript:gSearch()" data-val-captcha-visible-url="/captcha/IsValCodeVisible"></a>
+    </div>
+</div>
+
+@Power.Partial("搜索验证码弹出窗")
+
+<script src="~/content/_common/base/js/power.security.csrf.js" asp-append-version="true"></script>
+<script src="~/content/_common/fulltextsearch/js/default-site-search-box.js" asp-append-version="true"></script>
+<script src="~/content/_common/fulltextsearch/js/power.fulltextsearch.captchamodal.js" asp-append-version="true"></script>
+<script src="~/content/_common/fulltextsearch/js/power.fulltextsearch.wordselect.js" asp-append-version="true"></script>
+<script>
+    document.getElementById("inputkeyword").onkeydown = function (e) {
+        e = e || window.event;
+        if (e.keyCode == 13) {
+            gSearch();
+        }
+    };
+
+    function checkChinese(obj) {
+        if (obj.length != 0) {
+            if (obj.match(/^[\u4e00-\u9fa5]+$/))
+                return true;
+            else
+                return false;
+        } else {
+            return false;
+        }
+    }
+    function textlength(str) {
+        var len = 0;
+        for (var i = 0; i < str.length; i++) {
+            var c = str.charCodeAt(i);
+            //单字节加1
+            if ((c >= 0x0001 && c <= 0x007e) || (0xff60 <= c && c <= 0xff9f)) {
+                len++;
+            }
+            else {
+                len += 2;
+            }
+        }
+
+        return len;
+    };
+
+    function gSearch() {
+        var normalsearch = $("#normalsearch").val();
+        var indexitemid = $('#indexitemid').val();
+        var keyword = $('[id=inputkeyword]').filter(':visible').val();
+        var route = "@FulltextSearchConfig.Instance.Route";
+
+        var siteIdentifier = $('#loweridentifier').val();
+
+        var kword = '';
+        var isSearch = true;
+        // 判断关键词是否含有空格
+        if (keyword.indexOf(" ") > -1) {
+            var arr = keyword.split(' ');
+            var ii = arr.length;
+            while (ii--) {
+                // 判断是中文还是英文
+                if (checkChinese(arr[ii])) {
+                    //判断中文字节是否大于2个字，少于2个字移除。
+                    if (textlength(arr[ii]) < 4) {
+                        arr.splice(ii, 1);
+                    }
+                }
+            }
+
+            kword = arr.join(' ');
+        }
+        else {
+            // 不含有空格就判断是中文还是英文
+            if (checkChinese(keyword)) {
+                //判断中文字节是否大于2个字，少于2个字提示。
+                if (textlength(keyword) < 4) {
+                    alert("搜索关键词必须大于或等于2个字符！");
+                    isSearch = false;
+                }
+                else {
+                    kword = keyword;
+                }
+            } else {
+                kword = keyword;
+            }
+        }
+
+        //少于2个字不允许搜索。
+        if (!isSearch) {
+            return;
+        }
+
+        keyword = kword;
+
+        if (keyword == '' || keyword == "请输入关键词") {
+            alert("请输入关键词");
+        } else {
+            var params = "";
+            if (normalsearch && normalsearch === 'true') {
+                params += '&st=2' +
+                    '&ns=' +
+                    normalsearch +
+                    '&iiid=' +
+                    indexitemid;
+            }
+
+            if (siteIdentifier && siteIdentifier != "") {
+                params += '&lsi=' + siteIdentifier;
+            }
+
+            validateCode(function () {
+                var siteId = @SiteContext.Current.SiteId;
+                var validCode = $("#SearchValidateCode").val();
+                window.location =
+                    '@SiteHelperBusiness.GetSiteUrl(SiteContext.Current.SiteId).TrimEnd('/')/' + route + '?sid=' + siteId + '&wd=' + encodeURIComponent(keyword) + params + '&vc=' + validCode;
+            });
+        }
+    }
+</script>

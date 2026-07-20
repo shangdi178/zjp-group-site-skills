@@ -1,0 +1,45 @@
+﻿@inject ContentRouteUrlHelperExtend ContentRouteUrlHelperExtend
+@model Article
+@{
+    //参数
+    int TitleLength = Param.TitleLength ?? 50; //标题长度
+    int ContentLength = Param.ContentLength ?? 200; //内容长度
+    var DisplayDateTime = Param.DisplayDateTime ?? ""; //日期格式
+    var DisplayDateTime2 = Param.DisplayDateTime2 ?? ""; //日期格式
+    var DisplayNodeName = Param.DisplayNodeName ?? false; //显示节点名称
+    int ImageWidth = Param.ImageWidth ?? 200; // 图片宽度
+    int ImageHeight = Param.ImageHeight ?? 150; // 图片高度
+}
+
+@if ((int)Row.Index == 0)
+{
+    <li class="noData">暂无资料</li>
+    return;
+}
+<li class="@Row.PositionLiteral @Row.IntervalLiteral @Row.HighRankLiteral">
+
+        @if (!string.IsNullOrEmpty(DisplayDateTime))
+        {
+                <div class="date"><b>@Model.PublishTime.ToString(DisplayDateTime)</b><span>@Model.PublishTime.ToString(DisplayDateTime2)</span></div>
+        }
+    <div class="title">
+        <a target="@(Param.LinkBlankTaget ?? false ? "_blank" : null)" class="tit" href="@ContentRouteUrlHelperExtend.ContentUrl(Model)" title="@Model.Title">@Model.Title.CutText(TitleLength, "…")</a>
+    </div>
+
+    <div class="con">
+
+        @if (ContentLength > 0)
+        {
+            <div class="intro">
+                @Model.Intro(ContentLength, "…")
+            </div>
+        }
+
+
+    </div>
+
+</li>
+@if (Row.IsSplit)
+{
+    <li class="split"></li>
+}

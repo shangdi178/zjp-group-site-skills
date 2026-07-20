@@ -1,0 +1,146 @@
+﻿@*公开咨询列表页模板*@
+@inject NodeService NodeService
+@inject LetterService LetterService
+@inject LetterCategoryService LetterCategoryService
+
+@Power.VisualizationView(new { Area = "LetterBox", Action = "Publicity"})
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("xygk");
+    ViewBag.NavigationIdentifier.Add("yzxx");
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    ViewBag.bodyClass = "letterListPage";
+    string keyword = UrlParams.keyword?.ToString();
+    int letterCategoryId = ViewBag.CategoryId ?? 0;
+    IPagedList<Letter> publicLetterList = null;
+    publicLetterList = string.IsNullOrWhiteSpace(keyword) ?
+        LetterService.GetPagedList(20, letterCategoryId, true, null, "FinishTime Desc") :
+        LetterService.GetPagedList(20, letterCategoryId, true, m => m.Title.Contains(keyword), "FinishTime Desc");
+    LetterCategory letterCategory = null;
+    List<LetterCategory> list = new List<LetterCategory>();
+    if (letterCategoryId > 0)
+    {
+        letterCategory = LetterCategoryService.GetEntity(m => m.CategoryId == letterCategoryId);
+        list = LetterCategoryService.GetChildren(5, letterCategory.Identifier);
+    }
+    int count = 0;
+    var even = string.Empty;
+    ViewBag.PageTitle = letterCategory == null ? node?.NodeName + "_" + this.Context.GetCurrentSite().SiteTitle : letterCategory.CategoryName + "_" + node?.NodeName + "_" + this.Context.GetCurrentSite().SiteTitle;
+}
+@section header {
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/letterbox/css/letterbox.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content">
+    <!-- side S -->
+    @if (letterCategoryId > 0)
+    {
+        <aside class="side">
+            <div id="sideMenu" class="sideBox">
+                <div class="hd">
+                    <h3>@letterCategory.CategoryName</h3>
+                </div>
+                <div class="bd">
+                    <ul class="menuList">
+                        @if (list != null && list.Count > 0)
+                        {
+                            foreach (var childNode in list)
+                            {
+                                <li class="@Power.Focus(childNode.Identifier, "on")"><a href="@Power.Url.LetterBoxPublicityUrl(childNode.CategoryId)">@childNode.CategoryName</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </aside>
+    }
+    else
+    {
+    <aside class="side">
+        @Power.Partial("侧栏-通用", new { Node = node })
+    </aside>
+    }
+    <!-- side E -->
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })@if (letterCategory != null){<label> &gt; @letterCategory.CategoryName</label>}</div>
+                <h3><span>公开咨询信件</span></h3>
+                <a target="_blank" class="msgWriteBtn" href="@Power.Url.LetterBoxWriteUrl()"><i></i>我要咨询</a>
+                <a target="_blank" class="msgQueryBtn" href="@Url.Action("Query", "home", new { area = "LetterBox" })"><i></i>咨询查询</a>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <div class="letterSearch">
+                    <div class="searchBox">
+                        <div class="hd">信件搜索</div>
+                        <div class="bd">
+                            @if (letterCategoryId > 0)
+                            {
+                                <form action="@Power.Url.LetterBoxPublicityUrl(letterCategoryId)" method="get">
+                                    <input class="keyword" type="text" name="keyword" value="@keyword" placeholder="请输入关键字">
+                                    <input class="searchsubmit" type="submit" value="搜索">
+                                </form>
+                            }
+                            else
+                            {
+                                <form action="@Power.Url.LetterBoxPublicityUrl()" method="get">
+                                    <input class="keyword" type="text" name="keyword" value="@keyword" placeholder="请输入关键字">
+                                    <input class="searchsubmit" type="submit" value="搜索">
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <table class="letterList">
+                    <thead>
+                    <tr>
+                        <th class="num">编号</th>
+                        <th class="ico">&nbsp;</th>
+                        <th class="title">信件主题</th>
+                        <th class="dep">提交人</th>
+                        <th class="state">办理情况</th>
+                        <th class="date">信件日期</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @if (publicLetterList != null)
+                    {
+                        foreach (var letter in publicLetterList)
+                        {
+                            count++;
+                            even = count % 2 == 0 ? "even" : "";
+                            <tr class="openLetter @even">
+                                <td class="num">@count</td>
+                                <td class="ico"><img src="~/content/_common/base/img/msg.png" alt="公开信件" title="公开信件"></td>
+                                <td class="title"><a href="@Url.Action("Details", new { id = letter.LetterId })" title="@letter.Title">@letter.Title</a></td>
+                                <td class="dep">@letter.Nickname</td>
+                                <td class="state">
+                                    @if (letter.LetterStatus == LetterStatus.Processed)
+                                    {
+                                        <i class="s3">已办理</i>
+                                    }
+                                    else
+                                    {
+                                        <i class="s2">办理中</i>
+                                    }
+                                </td>
+                                <td class="date">@letter.SubmitTime.ToString("yyyy-MM-dd")</td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+                <div class="page">@Power.Partial("通用分页")</div>
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->

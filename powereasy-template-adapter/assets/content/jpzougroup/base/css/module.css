@@ -1,0 +1,146 @@
+﻿@charset "utf-8";
+/*
+    Css for PEL,    ver 1.0
+    CopyRight By Dongyi Network Technology CO.,Ltd Design Center
+
+    所有网站通用模块，可根据自身网站修改
+*/
+
+/* 通用信息列表DOT */
+.infoList{ text-align:left;}
+.infoList li {line-height:22px; overflow:hidden; padding: 4px 0px 4px 15px; background:url(../img/dot-01.png) no-repeat 0px 14px;}
+.infoList li a{overflow:hidden; font-size: 16px;  font-weight: bold; color: #333;}
+.infoList li .date{font-size: 12px; float:left; color:#999;}
+
+/* infoListA */
+.infoListA{text-align: left;}
+.infoListA li{height: 40px; line-height: 40px; overflow: hidden;}
+.infoListA li a{font-size: 14px; }
+.infoListA li .date{float: left; _display: inline; font-size: 16px; font-style:italic;  margin-right: 10px; color: #00496a}
+
+/* infoListB */
+.infoListB li{padding: 0 0 10px 12px;margin-bottom:10px;border-bottom:1px solid #ddd; line-height: 26px;background: url(../img/dot-03.png) 0px 8px no-repeat;position:relative; font-size: 14px; }
+.infoListB .date{ color:#999; float:right; font-size: 12px;}
+.infoListB .last{border-bottom: none; margin-bottom: 0px; padding-bottom: 0px}
+
+/* 通用带图片的信息列表_普通式 */
+.picList{margin:0 -10px;}
+.picList li{float:left;width:24.99%;margin-bottom:15px;}
+.picList li .pic{margin:0 10px;background-color:#fff;}
+.picList li .title{margin:0 10px;}
+.picList li .pic img{width:100%;height:auto;}
+.picList li .pic a:hover img{filter:alpha(opacity=80);opacity:.8;}
+.picList li .title{padding-top:5px;height:40px;line-height:20px;text-align:center;overflow:hidden;}
+
+/* 通用带图片的信息列表_普通式 - 横排浮动 */
+.picListFl{ overflow:hidden; zoom:1; margin-right:-2%  }
+.picListFl li{ width:23%; margin-right:2%; text-align:center; float:left; _display:inline;  }
+.picListFl li .pic{line-height:0;}
+.picListFl li .pic img{ width:100%; height:auto;  }
+.picListFl li .title{ padding-top:5px; line-height:22px; height:44px; }
+
+/* 内容带图片的信息列表_普通式 - 左图片右文字 */
+.txtPicList li{ overflow:hidden;border-bottom:1px dotted #ddd;padding-bottom:10px;  margin-bottom:10px;}
+.txtPicList li .pic{float:left;margin-right:20px;}
+.txtPicList li .pic img{width:120px;}
+.txtPicList li .pic a:hover img{filter:alpha(opacity=80);opacity:.8;}
+.txtPicList li .con{overflow:hidden;}
+.txtPicList li .title{color:#c00; font-weight:bold;}
+.txtPicList li .title a{color:#c00;}
+.txtPicList li .intro{color:#666;line-height:20px;}
+.txtPicList li .intro .more{ color:#888; font-size:12px;}
+
+/* 日历式信息列表 */
+.dateList{}
+.dateList li{height: 60px; overflow: hidden; margin-bottom: 20px}
+.dateList li .date{width: 60px; height: 60px; float: left; _display: inline; margin-right: 12px; background: #f2f2f2}
+.dateList li .date b{display: block; height: 22px; line-height: 22px; text-align: center; font-size: 12px; color: #fff; background: #00496a }
+.dateList li .date span{display: block; height: 38px; line-height: 38px; text-align: center; font-size: 24px; color: #00496a;}
+.dateList li .title{height: 20px; line-height: 20px; overflow: hidden; font-size: 14px; font-weight: bold; margin-bottom: 4px;}
+.dateList li .intro{height: 36px; line-height: 18px; font-size: 12px; text-indent: 2em; color: #9a9a9a}
+.dateList li.last{margin-bottom: 0px;}
+
+/* 内容带图片的信息列表_普通式 - 上图片下文字 */
+.txtPicListB li{width:250px; padding:0 19px; float:left;}
+.txtPicListB li .pic{}
+.txtPicListB li .pic img{width:250px;height: 180px;}
+.txtPicListB li .title{ height:32px; line-height:32px; padding-top:4px; white-space: nowrap; text-overflow: ellipsis; overflow:hidden; text-align:left;}
+.txtPicListB li .title span{padding-right:20px;}
+.txtPicListB li .title a{font-size:14px;color: #00496a;}
+.txtPicListB li .intro{ color:#666; height: auto; }
+.txtPicListB li .intro .more{ color:#f60;  }
+
+/* 头条图文信息列表_普通式 */
+.topicList li{ height:24px; line-height:24px; overflow:hidden;  }
+.topicList li.noData{padding-left:12px;background: url(../img/dot-01.png) no-repeat 0px 13px; }
+.topicList li .date{ float:right; color:#999;  }
+.topicList .t {padding-bottom:10px; margin-bottom:10px; height:auto; text-align:center; border-bottom:1px solid #dddddd; background:none; }
+.topicList .t .pic{float:left;margin-right:20px;background-color:#fff;}
+.topicList .t .pic a:hover img{filter:alpha(opacity=80);opacity:.8;}
+.topicList .t .con{overflow:hidden;}
+.topicList .t .title{line-height: 32px;text-align: left;font-weight: bold; white-space:nowrap; text-overflow: ellipsis; overflow:hidden;}
+.topicList .t .tit{font-size:15px;  color:#333;}
+.topicList .t .tit:hover{color: #00496a}
+.topicList .t .intro{ color:#999; text-align:left; font-size:12px; line-height: 20px; text-indent: 2em}
+.topicList .t .intro .more{float: none; height:20px; line-height:20px; padding:0 4px; color:#cf1b0c; text-indent:0; }
+.topicList li.n {height:30px;line-height:30px;overflow:hidden; background:url(../img/dot-01.png) no-repeat 0px 13px; padding:0 5px 0 15px; white-space: nowrap; text-overflow: ellipsis;}
+.topicList li.n .date{float:right;color:#bcbcbc; font-size: 12px}
+
+/* 有图片时追加的类 class="topicList topicHasPic"  */
+.topicHasPic .t{overflow:hidden; zoom:1; }
+.topicHasPic .pic{width:176px; float:left;}
+.topicHasPic .pic img{width:176px;height: 132px;}
+.topicHasPic .con{text-align:left; margin-left:192px;}
+
+/* 焦点图切换-广告 */
+.slideBox{ height:100px; overflow:hidden; position:relative; }
+.slideBox .hd{ position:absolute; z-index:1; right:5px; bottom:5px; }
+.slideBox .hd ul{ overflow:hidden; zoom:1; float:left;  }
+.slideBox .hd ul li{ float:left; margin-right:2px;  width:16px; height:16px; line-height:16px; text-align:center; background:#000; cursor:pointer; color:#fff; filter:alpha(opacity=60);opacity:0.6;   }
+.slideBox .hd ul li.on{ background:#f00;   font-weight:bold; filter:alpha(opacity=100);opacity:1;  }
+.slideBox .bd{ position:relative; z-index:0; }
+.slideBox .bd .pic{ height:100px;  }
+.slideBox .bd .con{ display:none; }
+
+/* 焦点图切换- 数字 */
+.focusBox{width:350px;height: 260px; float:left; overflow:hidden; position:relative; }
+.focusBox .hd{ position:absolute; z-index:20; right:10px; bottom:14px; z-index:15;}
+.focusBox .hd ul{overflow:hidden; zoom:1; z-index:2;}
+.focusBox .hd ul li{float:left; margin-left:4px;  width:8px; height:8px;background:#CCCCCC;text-indent: -9999px;cursor: pointer;overflow: hidden;
+    -webkit-border-radius:8px; -moz-border-radius:8px; border-radius:8px; }
+.focusBox .hd ul li.on{background-color:#f60;}
+.focusBox .bd{ position:relative; z-index:2; }
+.focusBox .bd ul li{z-index:9; position: relative; }
+.focusBox .bd .pic{ position:relative; z-index:0; }
+.focusBox .bd .pic img{width:350px; height:260px; border:0;   }
+.focusBox .bd .txt{display:none;}
+.focusBox .bd .con{width:100%; position:absolute; z-index:1; left: 0; bottom:0; *bottom:3px; height:40px; line-height:40px; text-align:center; }
+.focusBox .bd .con .title{ position:absolute; width:100%;left:0;text-align:left;text-indent:1em;z-index:1;font-size:14px;}
+.focusBox .bd .con .title a{color:#fff;}
+.focusBox .bd .con .titleBg{ position:absolute; width:100%; height:100%; background:#000; left:0; top:0; filter:alpha(opacity=50);opacity:0.5; }
+.focusBox .bd .con .bg{position:absolute; width:100%; height:70px; z-index:0; left:0; background:#000; filter:alpha(opacity=50);opacity:0.5;  }
+/*-- 网站地图 --*/
+.siteMap{overflow:hidden; zoom:1; }
+.siteMap .li1{ margin-bottom:10px; }
+.siteMap .h1{ height:40px; line-height:40px;  border:1px dotted #ccc; background:#fff;    }
+.siteMap .h1 .a1{font:normal 16px/40px "Microsoft YaHei";_font-weight:bold;color: #00496a;padding-left:10px;}
+.siteMap .ul1{ padding:10px 20px; zoom:1; display:block !important; }
+.siteMap .li2{  display:inline-block; *display:inline; zoom:1; padding-right:10px; vertical-align:top;  }
+.siteMap .a2{ color:#666;   }
+.siteMap .ul2{ padding:0 0 20px 0; }
+.siteMap .li3{  line-height:18px;  display:inline-block; *display:inline; zoom:1;   }
+.siteMap .a3{ color:#999; padding-right:10px; margin-right:10px;   border-right:1px solid #ddd;  }
+.siteMap .last3 .a3{ border-right:0;  }
+
+/* url_方块样式分页 */
+.page{font-size: 0;text-align: center;padding: 25px 0;clear:both; line-height:26px;}
+.page a,.page span{ font-size:12px; display:inline-block; *display:inline; zoom:1; border:1px solid #d4d4d4; padding:2px 10px; margin-right:5px; border-radius:2px }
+.page a:hover {border:1px solid #00496a; text-decoration:none; color:#00496a;}
+.page .current{ background:#00496a; border:1px solid #00496a; color:#fff !important;}
+.page select{height: 18px;line-height: 18px;padding:0 8px;background:#fff;border:0;border:none;vertical-align:middle;}
+
+/*--
+颜色代码
+#1E72B4 深蓝色标题
+#C4DEF8 淡蓝色边框
+--*/

@@ -1,0 +1,62 @@
+﻿@*列表页模板*@
+@inject NodeService NodeService
+@inject NodeInterfaceExtend NodeInterfaceExtend
+
+@model Node
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.HeaderTitle = Model.NodeName;
+}
+
+@section header {
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">@Power.Partial("位置导航", new { Node = Model })</div>
+<!-- content S -->
+<div id="content">
+    @Power.Partial("节点归档图标", new { Node = Model })
+    @NodeInterfaceExtend.NodeHits(Model)
+
+    <!-- 正文内容 S -->
+    <div class="boxLoop">
+
+        @{
+            var nodeService = NodeService;
+            var childNodes = nodeService.GetChildNodeList(Model).Take(999);
+        }
+
+        @foreach (Node childNode in childNodes.Where(n => n.ShowOnParentNodeList))
+        {
+            <div class="mainBox">
+                <div class="mHd">
+                    <h3 class="title">@Power.Url.NodeLink(childNode.Identifier)</h3>
+                </div>
+                <div class="mBd">
+                    @if (childNode.MoldId == 2)
+                    {
+                        <ul class="picListFl">
+                            @Power.PhotoList("图片列表", new { Count = 4, Node = childNode.Identifier, TitleLength = 60, RefNode = true })
+                        </ul>
+                    }
+                    else if (childNode.MoldId == 3)
+                    {
+                        <ul class="infoList">
+                            @Power.VideoList("视频标题列表", new { Count = 6, Node = childNode.Identifier, TitleLength = 112, DateFormat = "MM-dd", RefNode = true })
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="friendLinkListF">
+                    @Power.ContentList("友情链接列表", new { Node = childNode.Identifier, Count = 5, TitleLength = 80, RefNode = true })
+                </ul>
+                    }
+                    <a class="moreBtn" href='@Power.Url.NodeUrl(childNode.Identifier)'>查看更多&gt;&gt;</a>
+                </div>
+            </div>
+        }
+    </div>
+    <!-- 正文内容 E -->
+
+</div>
+<!-- content E -->

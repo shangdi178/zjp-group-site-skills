@@ -1,0 +1,36 @@
+﻿@inject ContentRouteUrlHelperExtend ContentRouteUrlHelperExtend
+@model Article
+@{
+    //参数
+    int TitleLength = Param.TitleLength ?? 50; //标题长度
+    int ContentLength = Param.ContentLength ?? 200; //内容长度
+    var DateFormat = Param.DateFormat ?? ""; //日期格式
+
+}
+
+@if ((int)Row.Index == 0)
+{
+    <li class="noData">暂无资料</li>
+    return;
+}
+<li class="@Row.PositionLiteral @Row.IntervalLiteral @Row.HighRankLiteral">
+
+    <div class="title">
+        <a target="@(Param.LinkBlankTaget ?? false ? "_blank" : null)" class="tit" href="@ContentRouteUrlHelperExtend.ContentUrl(Model)" title="@Model.Title">@Model.Title.CutText(TitleLength, "…")</a>
+    </div>
+
+    <div class="others">
+        <span class="date">时间：@Model.PublishTime.ToString(DateFormat)</span>
+        <span class="hits">浏览：@Model.Hits</span>
+    </div>
+    @if (ContentLength > 0)
+    {
+        <div class="intro">
+            @Model.Intro(ContentLength, "…")
+        </div>
+    }
+</li>
+@if (Row.IsSplit)
+{
+    <li class="split"></li>
+}

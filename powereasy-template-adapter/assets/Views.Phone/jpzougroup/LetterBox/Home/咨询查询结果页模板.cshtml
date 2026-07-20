@@ -1,0 +1,135 @@
+﻿@*咨询查询结果页模板*@
+@inject LetterService LetterService
+@inject NodeService NodeService
+
+@model Letter
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    var phoneInquiryRequired = LetterBoxConfig.Instance.TelephoneInquiryRequired;
+    var letter = phoneInquiryRequired ? LetterService.GetEntity(m => (!string.IsNullOrEmpty(Model.Telephone) && Model.Telephone == m.Telephone && m.ApplicationFormNumber.Equals(Model.ApplicationFormNumber))) : LetterService.GetEntity(x => x.ApplicationFormNumber.Equals(Model.ApplicationFormNumber));
+    ViewBag.bodyClass = "letterResultPage";
+    ViewBag.NavigationIdentifier.Add("yzxx");
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    ViewBag.PageTitle = "查询结果_" + node?.NodeName + "_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.HeaderTitle = "查询结果";
+    var extendFields = this.ViewBag.ExtendFields;
+}
+@section header {
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/letterbox/css/letterbox.css" asp-append-version="true" rel="stylesheet" />
+}
+<div class="path">@Power.Partial("位置导航", new { Node = node }) &gt;<span>查询结果</span></div>
+<!-- content S -->
+<div id="content">
+
+    <!-- 正文内容 S -->
+    <div class="queryResult">
+        @if (null == letter)
+        {
+            <div class="tit">
+                <h3>错误提示！</h3>
+            </div>
+            <div class="con">
+                <div class="tips">
+                    @(phoneInquiryRequired ? "该信件不存在，请检查手机号码和查询码是否有误。" : "该信件不存在，请检查查询码是否有误。")
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="tit">
+                <h3>咨询查询结果</h3>
+            </div>
+            <div class="mainBox">
+                <div class="mBd">
+
+                    <!-- 正文内容 S -->
+                    <div class="letterCon">
+                        <table class="detailTable" border="0" cellspacing="0" cellpadding="0">
+                            <thead>
+                            <tr>
+                                <th colspan="6">咨询情况</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="trTitle">
+                                <td class="tdName">标题</td>
+                                <td class="tdCon" colspan="5">@letter.Title</td>
+                            </tr>
+                            <tr class="trName">
+                                <td class="tdName">咨询人</td>
+                                <td class="tdCon">@letter.Name</td>
+                                <td class="tdName">咨询日期</td>
+                                <td class="tdCon">@letter.SubmitTime.ToString("yyyy-MM-dd")</td>
+                                <td class="tdName">回复状态</td>
+                                <td class="tdCon">
+                                    @if (letter.LetterStatus == LetterStatus.Processed)
+                                    {
+                                        <span class="letterstatusbold">已回复</span>
+                                    }
+                                    @if (letter.LetterStatus == LetterStatus.PendingProcess)
+                                    {
+                                        <span class="letterstatusbold">待回复</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr class="trContent">
+                                <td class="tdName">咨询内容</td>
+                                <td class="tdCon" colspan="5">
+                                    <div class="preDiv"><pre>@letter.Content</pre></div>
+                                </td>
+                            </tr>
+                            @Power.Partial("便民咨询扩展字段列表页")
+                            </tbody>
+                        </table>
+                        @{
+                            var transactWays = string.Empty;
+                            foreach (var transactWay in letter.TransactWays)
+                            {
+                                transactWays += transactWay.TransactWayName + "，";
+                            }
+                            transactWays = transactWays.TrimEnd('，');
+                        }
+                        @if (letter.LetterStatus == LetterStatus.Processed)
+                        {
+                            <table class="detailTable" border="0" cellspacing="0" cellpadding="0">
+                                <thead>
+                                <tr>
+                                    <th colspan="4">回复情况</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="trUnit">
+                                    <td class="tdName">回复单位</td>
+                                    <td class="tdCon">@letter.ReplyUnit</td>
+                                    <td class="tdName">办结日期</td>
+                                    <td class="tdCon">
+                                        @{
+                                            var finishTime = letter.FinishTime == null ? "" : letter.FinishTime.Value.ToString("yyyy-MM-dd");
+                                        }
+                                        @finishTime
+                                    </td>
+                                </tr>
+                                @if (letter.PublicizedReplyContent)
+                                {
+                                    <tr class="letter_con">
+                                        <td class="tdName">回复内容</td>
+                                        <td class="tdCon" colspan="3">@letter.ReplyContent.ToHtml()</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td class="tdName">办理方式</td>
+                                    <td class="tdCon" colspan="3">@transactWays</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                    <!-- 正文内容 E -->
+
+                </div>
+            </div>
+        }
+    </div>
+    <!-- 正文内容 E -->
+</div>
+<!-- content E -->

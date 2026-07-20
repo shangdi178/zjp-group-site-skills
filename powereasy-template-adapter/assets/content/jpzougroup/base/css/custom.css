@@ -1,0 +1,72 @@
+﻿@charset "UTF-8";
+/*
+
+本css文件用于当前网站自定义样色
+主色：#00496a
+鼠标经过颜色：#076a97
+
+1、根据当前站点风格修改颜色
+2、制作一个 logo-custom.png ，高度建议限制为56px；
+3、根据站点实际情况添加所需要的样式
+
+*/
+
+/* 翻页 -----------------------------------------------------*/
+.pager a,
+.pager a:active { color: #00496a;}
+.pager a:hover { border: 2px solid #00496a;}
+.pager span.current { background: #00496a; border: 2px solid #00496a;}
+
+/* 全文检索-Logo */
+.s-logo { color: #00496a; }
+.s-logo a { color: #00496a; }
+.s-logo.sm h2 { padding-left: 62px; }
+
+/* 全文检索-站点选择 */
+.s-header .select-box dt { background-image: url(../img/path.png) }
+.s-header .select-box dt span{ color: #00496a; }
+.select-box .select-box-row h3{ background: #00496a; }
+.select-box .select-box-row ul li:hover{ color: #00496a; }
+.select-box .select-box-row ul li.active{ color: #00496a; }
+.select-box dt .s-option { color: #00496a; }
+.select-box dt .arrow-dn { border-top-color: #00496a; }
+.select-box dd { border-color: #00496a; }
+
+/* 全文检索-搜索框 */
+.s-form.sm .btn-box input { background-color: #00496a; }
+.s-form .input-box input { border: 2px solid #00496a; }
+.s-form .btn-box input { background-color: #00496a; }
+.s-form .btn-box input:active { background-color: #076a97; }
+
+/* 全文检索-切换分类 */
+.s-tab { background-color: #00496a;}
+.s-tab li:hover,
+.s-tab li.current{ background: #076a97; }
+
+/* 全文检索-分类搜索 */
+#categorySiteRight .group h3{ background:#00496a; }
+#categorySiteRight .group h3:hover{ background-color: #076a97; }
+#categorySiteRight .list li a:hover{ color: #00496a; }
+#categorySiteRight .list li.active a{ color: #00496a; }
+
+/* 全文检索-结果页节点名称*/
+.nodename { background-color: #00496a; }
+.related-nodename { background-color: #00496a; }
+
+/* 全文检索-高级搜索 */
+.row .btn button { background-color: #00496a; }
+
+/* 频繁搜索 */
+.modal .btn-primary { background-color: #00496a; border-color: #00496a; }
+.modal .btn-primary:hover { background-color: #076a97; border-color: #076a97; }
+
+/* 搜索帮助页 */
+.s-help-sidebar li.current a { color: #00496a; border-left-color: #00496a;}
+.s-help-container .tab-panel h4 {color: #00496a;}
+
+/* 个性化首页底部样式 */
+.myHomePage #footer{ text-align: center; background-color: #00496a;}
+.myHomePage #footer .pics{ top: 0px; }
+.myHomePage .box .hd h3 { color: #00496a; border-color: #00496a; }
+.myHomePage .SubscriptionColumn .cHd h3 { border-color: #00496a; }
+.myHomePage #sideMenu .menuList li.on a { background-color: #00496a; }

@@ -1,0 +1,82 @@
+﻿@*文章评论列表页模板*@
+@inject ArticleCommentService ArticleCommentService
+@inject ArticleService ArticleService
+@inject ContentRouteUrlHelperExtend ContentRouteUrlHelperExtend
+
+@Power.VisualizationView(new { Area = "ContentManage", Controller = "Article", Action = "Comment"})
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    int sourceId = ViewBag.sourceId;
+    ViewBag.PageTitle = "评论列表_" + this.Context.GetCurrentSite().SiteTitle;
+    var service = ArticleCommentService;
+    int commentCount = service.GetAllCommentCount(sourceId);
+    var article = ArticleService.GetEntity(sourceId);
+}
+
+@section header{
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/_common/base/css/power-comment.css" asp-append-version="true" rel="stylesheet" />
+}
+@Power.Partial("用户登录弹出窗")
+<!-- content S -->
+<div id="content" class="noSideContent">
+        <!-- mainContent S -->
+        <div class="mainContent">
+            <div class="mainBox">
+                <div class="mHd">
+                    <div class="path">
+                        <em>您的位置：</em>
+                        <a href="@Url.Link("~/")">首页</a> &gt; <a href="@Url.Action("Comment", "Article")">评论列表</a> <label>
+                    </div>
+                    <h3>评论列表</h3>
+                </div>
+                <div class="mBd">
+                    <article class="articleCon">
+                        <div class="printArea" data-power-area='content'>
+                            <!-- 标题 -->
+                            <h2 class="title">
+                                <a target="_blank" href="@ContentRouteUrlHelperExtend.ContentUrl(article)">@ViewBag.Title</a>
+                            </h2>
+                        </div>
+                    </article>
+                    <h1 class="np-title">
+                        <a href="javascript:void(0)" class="commenttotalnum" hidefocus="true"><span>@(commentCount)条评论</span></a>
+                        <span>文明上网理性发言</span>
+                    </h1>
+                    <div class="comments">
+                        @Html.AntiForgeryToken()
+                        @Power.Partial("发表评论", new { commentId = 0, sourceId })
+                    </div>
+                    <div class="hot-comment">
+                        <h3 class="commenttitle">热门跟帖</h3>
+                        <div class="comments commentlist">
+                            @Power.Partial("评论回复列表", new { sourceId, outputcount = 5, replyId = 0, usedpage = false, moldType = MoldType.Article.ToString() })
+                        </div>
+                    </div>
+                    <div class="new-comment">
+                        <h3 class="commenttitle">最新评论</h3>
+                        <div class="comments treecomment">
+                            @Power.Partial("评论回复列表", new { sourceId, outputcount = 5, replyId = 0, usedpage = true, moldType = MoldType.Article.ToString() })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- mainContent E -->
+</div>
+<!-- content E -->
+<input type="hidden" id="urls" data-deletecomment="@Url.Action("DeleteComment", "Article")"
+       data-addcomment="@Url.Action("AddComment", "Article")" />
+<input type="hidden" id="letterid" value="@sourceId" />
+<input type="hidden" id="modulename" value="ContentManage" />
+<!-- content E -->
+
+@section scripts
+{
+    <script src="~/content/_common/base/js/power-commentlist.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/scripts/jquery.validate.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/scripts/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/scripts/i18n/jquery.validate.locale_zh.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/jquery.validate_custom.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/power.ui.captcha.js" asp-append-version="true"></script>
+}

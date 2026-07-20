@@ -1,0 +1,64 @@
+﻿#header #logo {
+  display: block; }
+
+#header .title, #header .back {
+  display: none; }
+
+.focusBox {
+  margin-bottom: 0; }
+
+#content {
+  background: none;
+  padding: 0; }
+
+.focusBox {
+  margin-bottom: 10px !important; }
+
+.box,
+.mainBox {
+  background: #fff;
+  padding: 10px 10px 20px 10px; }
+.iconBtns .li5 {
+	padding: 10px 0 10px 0;
+  background: #F8C559;
+color: #000}
+
+.focusBox .bd .title a{ display: none;}
+.iconBtns {
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #fff; }
+
+.iconBtns .li1 a {
+  background: #7F92E0; }
+
+.iconBtns .li2 a {
+  background: #43ce96; }
+
+.iconBtns .li3 a {
+  background: #96c545; }
+
+.iconBtns .li4 a {
+  background: #3BAADD; }
+
+.iconBtns .li5 a {
+  background: #F8C559; 
+}
+
+.iconBtns .li6 a {
+  background: #f18968; }
+
+.iconBtns .li2 a::before {
+  content: "\e602"; }
+
+.iconBtns .li3 a::before {
+  content: "\e60a"; }
+
+.iconBtns .li4 a::before {
+  content: "\e62c"; }
+
+.iconBtns .li5 a::before {
+  content: "\e60e"; }
+
+.iconBtns .li6 a::before {
+  content: "\e611"; }

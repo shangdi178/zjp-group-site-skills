@@ -1,0 +1,71 @@
+﻿@charset "UTF-8";
+/* 信息公开-列表页 -----------------------------------------------------*/
+.gkmlList li{ float: left; width: 50%;}
+.gkmlList .a1{ display: block; height: 42px; line-height: 42px; border-bottom: 1px #eee solid; color: #1d86d5; padding-left: 2%;}
+.gkmlList .ul1{ overflow: hidden; padding: 3%;}
+.gkmlList .ul1 .li2{ min-width: 30.3%; float: left; margin: 0 3% 1% 0;}
+.gkmlList .a2{ display: inline-block;}
+.govSearch{ overflow: hidden;}
+.govSearch .name{ display: none;}
+.govSearch dd{ overflow: hidden; zoom: 1;}
+.govSearch .govKW{ width: 73%; height: 32px; line-height: 32px; border: 1px solid #CACACA; font-size: 14px; padding: 0 1%;}
+.govSearch a{ display: inline-block; width: 22%; text-align: center; background: #1d86d5; line-height: 34px; margin: 0 0 0 2%; color: #fff; font-size: 14px; cursor: pointer;}
+.govSearch .asBtn{ display: none; padding: 0 2%; background: #C8C8C8; color: #666;}
+.publicTable{ border-collapse: collapse; empty-cells: show; width: 100%;}
+.publicTable td{ background: #fff; padding: 12px 8px; text-align: center;}
+.publicTable .interval td, .publicTable .title td{ background: #F7F7F7;}
+.publicTable .title td{ text-align: center; color: #1d86d5; font-size: 18px; background: #F3F3F3; padding: 8px 8px;}
+.publicTable .index, .publicTable .type, .publicTable .date, .publicTable .title, .publicTable .symbol{ display: none;}
+.publicTable .name{ text-align: left;}
+.publicTable .name.on .miniTable{ display: block;}
+.publicTable .miniTable{ display: none; position: absolute; width: 50%; padding: 5px; border: 1px solid #ccc; background: #fff; z-index: 99; -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1); -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1); box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);}
+.publicTable .miniTable table{ width: 100%;}
+.publicTable .miniTable td{ padding: 5px; text-align: left; border-bottom: 1px solid #EDEDED; background: #fff;}
+.publicTable .miniTable .tdL{ width: 18%; text-align: right; font-weight: bold;}
+.publicTable .miniTable .last td{ border-bottom: 0;}
+
+/* 信息公开-内容页 -----------------------------------------------------*/
+.govDetail{ font-size: 16px; background: #fff;}
+.govDetailTable{ border-collapse: collapse; empty-cells: show;}
+.govDetailTable td{ font-size: 12px; line-height: 18px; background: #fff; padding: 3px; border: 1px solid #84caff; color: #969696;}
+.govDetailTable .tdlab{ text-align: right; width: 24%; color: #1d86d5; background: #b7e0ff;}
+.govDetailContent{ padding: 5% 3%;}
+.govDetailContent .property{ overflow: hidden; font-size: 14px; margin-bottom: 10px; color: #777;}
+.govDetailContent .property .size{ float: right; font-size: 0;}
+.govDetailContent .property .size a{ display: inline-block; border: 1px solid #ddd; color: #888; width: 24px; height: 20px; text-align: center; line-height: 20px; font-size: 12px; vertical-align: top; margin-left: 8px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
+.govDetailContent .property .size .l{ font-size: 17px; font-weight: 500;}
+.govDetailContent .property span{ margin-right: 15px;}
+.govDetailContent img{ max-width: 100%; height: auto !important;}
+.govDetailContent p{ margin-bottom: 20px;}
+.govDetailContent .title{ text-align: center; font-size: 24px; color: #1d86d5; margin-bottom: 30px; line-height: 1.6;}
+
+/* 领导之窗 -----------------------------------------------------*/
+.leaderList li{ border-bottom: 1px dotted #ccc; padding: 3% 4%; background: #fff;}
+.leaderList li:last-child{ border-bottom: 0;}
+.leaderList li .intro{ overflow: hidden;}
+.leaderList .title{ color: #1d86d5;}
+.leaderList .job::before, .leaderList .work::before{ content: "\e61c"; font-family: "iconfont"; color: #ddd; margin-right: 5px; font-size: 20px;}
+.leaderList .work::before{ content: "\e61d"; font-size: 16px;}
+.leaderList .work{ float: left;}
+.leaderList .intro span{ display: block;}
+.leaderList .text{ color: #888; overflow: hidden; zoom: 1; font-size: 14px;}
+.leaderList .intro .more{ display: none;}
+.leaderContent{ background: #fff;}
+.leaderDetail{ position: relative; overflow: hidden; padding: 2% 1%; font-size: 16px;}
+.leaderDetail .sTitle{ border-bottom: 0; font-size: 22px; text-align: center;}
+.leaderDetail .boxE{ margin-bottom: 35px;}
+.leaderDetail .bd{ line-height: 30px; padding: 15px 5px;}
+.leaderDetail .work{ text-indent: 2em; margin-bottom: 20px;}
+.leaderDetail .writeBtn{ margin: 3% auto; display: block; width: 120px; height: 40px; line-height: 40px; background: #DC221A; color: #fff; text-align: center; border-radius: 3px;}
+.leaderDetail .writeBtn::before{ content: "\e61e"; font-family: "iconfont"; margin-right: 10px;}
+.leaderDetail .infoList li{ height: 36px; line-height: 36px;}
+.leaderDetail-boxWrap{ overflow: hidden;}
+
+/* 政府机构设置介绍 -----------------------------------------------------*/
+.jgzzBox .hd{ overflow: hidden;}
+.jgzzBox .hd li{ width: 49%; float: left; height: 40px; line-height: 40px; background: #eee; margin-bottom: 2%; text-align: center;}
+.jgzzBox .hd li:nth-child(2n){ float: right;}
+.jgzzBox .hd .on{ background: #1d86d5; color: #fff;}
+.jgzzBox .cont{ font-size: 16px; line-height: 1.8;}
+
+/*# sourceMappingURL=infoPublicity.css.map */

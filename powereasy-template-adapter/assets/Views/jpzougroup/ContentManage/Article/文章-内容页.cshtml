@@ -1,0 +1,80 @@
+﻿@*内容页模板*@
+@inject ContentInterfaceExtendHelper ContentInterfaceExtendHelper
+@inject ArticleExtend ArticleExtend
+@Power.VisualizationView(new { Area = "ContentManage", Controller = "Article" })
+@model Article
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+}
+@section header {
+    <link href="~/content/_common/base/css/power-comment.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content">
+    <!-- side S 
+    <aside class="side">
+        @Power.Partial("侧栏-通用", new { Model.Node, ShowHotNews = true })
+    </aside>-->
+    <!-- side E -->
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Model.Node })&gt;<span>详细内容</span></div>
+                <h3><span>@Model.Node.NodeName</span></h3>
+            </div>
+
+                <!-- 正文内容 S -->
+                @Power.Partial("内容归档图标", new { Model.Archived, Model.ArchivedTime })
+                <article class="articleCon">
+                    <div class="printArea" data-power-area='content'>
+                        <!-- 标题 -->
+                        <h2 class="title">
+                            @Model.Title().SetFontStyle(Model.TitleColor, Model.TitleFontStyle)
+                            <div class="subheading">@Model.Subheading</div>
+                        </h2>
+                        <div class="property">
+                            <span>来源：@Model.CopyFrom </span> <span>发布时间：@Model.PublishTime.ToString("yyyy-MM-dd HH:mm:ss")</span> <span>浏览次数：@ContentInterfaceExtendHelper.Hits(Model) 次</span> <span class="size">【字体：<a href="javascript:;" data-power-command="reducefont">小</a> <a href="javascript:;" data-power-command="enlargefont">大</a>】</span>
+                            @Power.Partial("进入后台编辑", new { Id = Model.ContentId, MoldType = "Article" })
+                        </div>
+                        <!-- 正文 -->
+                        <div class="conTxt" data-power-defaultFontSize="14" data-power-defaultLineHeight="2" data-power-imgMaxWidth="800">
+                            @ArticleExtend.Content(Model,"720p")
+                            @Power.Partial("审核人员列表", new { Model, ShowALLAuditRecord = true })
+                        </div>
+                    </div>
+                    @Power.Partial("文章内容分页")
+                    @Power.Partial("点赞收藏", new { contentId = Model.ContentId })
+                    @Power.Partial("智能标签", new { Content = Model })
+                    @Power.Partial("相关内容", new { Model.ContentId, Model.NodeId, TitleLength = 200 })
+                    @*@Power.Partial("文章签收用户列表", new { Model })*@
+                    <div class="userControl">
+                        @*@Power.Partial("分享按钮")*@
+
+                        <a href="javascript:;" class="dyBtn" data-power-command="printarea">【打印正文】</a>
+                    </div>
+
+                    @if (Model.EnabledComment && Model.IsApprove())
+                    {
+                        @Power.Partial("文章评论区块")
+                    }
+                    @Power.Partial("内容页-上下篇", new { Model.ContentId, Model.Node.Mold.MoldType, Unit = "条" })
+                </article>
+                <!-- 正文内容 E -->
+
+
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+@Power.Partial("文章签收确认框", new { Content = Model })
+<!-- content E -->
+
+@Power.Partial("视频下载")
+@section scripts{
+    <script src="~/content/_common/assets/scripts/jquery.PrintArea.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/ueditor/ueditor.parse.min.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/article.js" asp-append-version="true"></script>
+}

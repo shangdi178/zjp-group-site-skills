@@ -1,0 +1,41 @@
+﻿@inject NodeExtend NodeExtend
+@inject NodeService NodeService
+@Power.VisualizationPartialView(new
+{
+    Description = "侧栏-栏目菜单",
+    Parameters = new
+    {
+        Node = new { DisplayName = "节点实体", Type = "String", ControlType = "Text" }
+    }
+})
+@{
+    var nodeService = NodeService;
+    Node node = Param.Node;
+    if (node != null)
+    {
+        // 如果没有当前节点没有子节点则获取父节点下的子节点
+        var childNodes = nodeService.GetChildNodeList(node);
+        if (!childNodes.Any())
+        {
+            childNodes = nodeService.GetChildNodeList(NodeExtend.ParentNode(node));
+            node = NodeExtend.ParentNode(node);
+        }
+
+        <div id="sideMenu">
+            <div class="hd">
+                <h3><span>@node.NodeName</span></h3>
+            </div>
+            <div class="bd">
+                <ul class="menuList">
+                    @if (childNodes.Any()){
+                    foreach (var childNode in childNodes)
+                    {
+                        <li class="@Power.Focus(childNode.Identifier, "on")">@Power.Url.NodeLink(childNode.Identifier, childNode.NodeName)</li>
+                    }
+                    }
+                </ul>
+            </div>
+        </div>
+
+    }
+}

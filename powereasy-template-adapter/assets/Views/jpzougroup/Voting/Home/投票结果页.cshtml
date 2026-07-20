@@ -1,0 +1,114 @@
+﻿@*投票结果页模板*@
+@inject NodeService NodeService
+
+@Power.VisualizationView(new { Area = "Voting", Action = "Statistics"})
+@model Vote
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("zxtp");
+    var node = NodeService.GetNodeByIdentifier("zxtp");
+    ViewBag.PageTitle = "统计结果_"+ node.NodeName +"_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.bodyClass = "voteResultPage";
+    int count = ViewBag.VoteNumber;
+    var voteItems = ViewBag.VoteItems as List<VoteItem>;
+}
+@section header
+{
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/_common/voting/css/vote.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content" class="noSideContent">
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+                <h3><span>投票统计结果</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <div class="surveyInfo">
+                    <dl class="title-info">
+                        <dd>
+                            <i class="fa fa-calendar"></i>
+                            <span>开始时间:@(Model.BeginTime)</span>
+                            <span>结束时间:@(Model.EndTime)</span>
+                        </dd>
+                    </dl>
+                </div>
+                <div id="container">
+                    <div class="graphPater">
+                        <div class="graphTitle">
+                            <span class="result-title">
+                                <i class="fa fa-bar-chart"></i>
+                                @(Model.Title)
+                            </span>
+                            <span class="result-type">
+                                <label>类型:</label>
+                                @if (Model.VoteType.ToString() == "Single")
+                                {
+                                    <span>单选</span>
+                                }
+                                else
+                                {
+                                    <span>多选</span>
+                                }
+                
+                                <label>总得票数:</label><span>@count</span>
+                            </span>
+                        </div>
+                        <div class="graphContent">
+                            @if (voteItems != null)
+                            {
+                                <div class="col-md-6">
+                                    <div id="ResultsPie" style="height:@(this.ViewBag.ResultsPieHeight)px" class="result-chart"></div>
+                                </div>
+                
+                                <div class="col-md-6 options">
+                                    <table border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <th class="a">选项</th>
+                                            <th class="b">得票数</th>
+                                            <th class="c">占比</th>
+                                        </tr>
+                
+                                        @foreach (var voteItem in voteItems.OrderByDescending(x => x.VoteNumber))
+                                        {
+                                            <tr>
+                                                <td>@voteItem.Title</td>
+                                                <td>@voteItem.VoteNumber</td>
+                                                @if (count == 0)
+{
+   <td>0%</td>
+}
+else
+{
+   <td>(@((voteItem.VoteNumber / (double)count * 100).ToString("0.00"))%)</td>
+}
+                                            </tr>
+                                        }
+                
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="results" value="@JsonConvert.SerializeObject(voteItems)" id="Results" />
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->
+
+@section scripts
+{
+    <script src="~/content/_common/assets/scripts/echarts.js" asp-append-version="true"></script>
+    <script src="~/content/_common/voting/js/power-vote-statistics.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,204 @@
+﻿@charset "UTF-8";
+/* 信件内容页 ----------------------------------------------------- */
+.letterCon table {
+  margin-bottom: 10px;
+  background: #fff;
+  width: 100%;
+  font-size: 14px; }
+
+.letterCon table, .letterCon table tr, .letterCon table tr td {
+  border: 1px solid #e6e6e6;
+  border-collapse: collapse; }
+
+.letterCon table thead tr {
+  border-color: #e6e6e6; }
+
+.letterCon table thead th {
+  background: #eee;
+  height: 40px;
+  line-height: 40px;
+  color: #00496a;
+  text-align: center; }
+
+.letterCon table td {
+  padding: 14px 10px; }
+
+.letterCon table td.tdName {
+  background: #f7f7f7;
+  text-align: center;
+  width: 20%; }
+
+/* 写信页 ----------------------------------------------------- */
+/* 写信须知 */
+#xyBox {
+  padding: 0 3%; }
+
+.letterWritePage #xyBox h3 {
+  font-size: 28px;
+  color: #00496a;
+  text-align: center;
+  margin-bottom: 10px; }
+
+.letterWritePage #xyBox .center {
+  overflow: hidden;
+  text-align: center;
+  padding: 20px 0; }
+
+.letterWritePage #xyBox .nextBtn {
+  background: #00496a;
+  vertical-align: middle;
+  margin-right: 20px;
+  cursor: pointer;
+  border: none;
+  width: 166px;
+  height: 40px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+  color: #fff; }
+
+.letterWritePage #xyBox .prevBtn {
+  background: #d3d3d3;
+  vertical-align: middle;
+  border: none;
+  cursor: pointer;
+  width: 75px;
+  height: 40px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #555; }
+
+/* 写信内容 */
+.onlineplForm .tips {
+  padding: 10px 0 0 0;
+  display: block;
+  font-size: 14px; }
+
+.onlineplForm .tips i {
+  color: #f00; }
+
+.onlineplForm .hd {
+  height: 40px;
+  border-bottom: 2px solid #00496a; }
+
+.onlineplForm .hd h3 {
+  width: 138px;
+  float: left;
+  text-align: center;
+  height: 40px;
+  line-height: 40px;
+  background: #00496a;
+  color: #fff;
+  font-size: 16px; }
+
+.onlineplForm .hd .tips {
+  color: #00496a;
+  font-size: 12px; }
+
+.onlineplForm .bd {
+  padding: 10px 0; }
+
+.onlineplForm .bottombt {
+  padding: 20px 0;
+  overflow: hidden;
+  text-align: center; }
+
+.onlineplForm .bottombt .inputbutton {
+  background: #00496a;
+  vertical-align: middle;
+  margin-right: 20px;
+  cursor: pointer;
+  border: none;
+  width: 166px;
+  height: 40px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+  color: #fff; }
+
+.onlineplForm .bottombt .restButton {
+  background: #d3d3d3;
+  vertical-align: middle;
+  border: none;
+  cursor: pointer;
+  width: 75px;
+  height: 40px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #555; }
+
+.LetterInfoTable {
+  width: 100%; }
+
+.LetterInfoTable td {
+  position: relative;
+  padding: 8px 0; }
+
+.LetterInfoTable td.tdlab {
+  width: 30%;
+  vertical-align: top;
+  text-align: right; }
+
+.LetterInfoTable td input[type="text"] {
+  width: 80%;
+  border: #ccc solid 1px;
+  color: #36C;
+  height: 20px;
+  overflow: hidden;
+  padding: 5px; }
+
+.LetterInfoTable td select {
+  border: #ccc solid 1px;
+  padding: 5px;
+  width: 80%; }
+
+.LetterInfoTable textarea {
+  vertical-align: top;
+  width: 80%;
+  border: 1px solid #ccc;
+  padding: 5px;
+  height: 140px !important; }
+
+.LetterInfoTable .radio {
+  margin-right: 10px; }
+
+.LetterInfoTable .field-radiolist {
+  display: inline; }
+
+.LetterInfoTable .field-error {
+  display: block;
+  font-size: 14px;
+  width: 90%; }
+
+.LetterInfoTable .codeinp {
+  display: inline; }
+
+.LetterInfoTable .redStar {
+  position: absolute;
+  right: 9%;
+  top: 12px;
+  color: #f00; }
+
+.LetterInfoTable .codeinp img {
+  position: absolute;
+  right: 15%;
+  top: 12px; }
+
+/* 使用帮助 ----------------------------------------------------- */
+.letterHelpPage .help {
+  margin-top: 10px; }
+
+.letterHelpPage .help h3 {
+  font-size: 16px;
+  line-height: 2em;
+  padding-left: 10px;
+  font-weight: bold;
+  color: #00496a;
+  border-bottom: #ddd 1px dotted; }
+
+.letterHelpPage .help .con {
+  font-size: 14px;
+  line-height: 1.8em;
+  padding: 5px 10px 15px; }

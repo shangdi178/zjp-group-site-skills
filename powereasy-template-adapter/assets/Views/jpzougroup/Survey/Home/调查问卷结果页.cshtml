@@ -1,0 +1,56 @@
+﻿@*问卷调查结果页模板*@
+@inject NodeService NodeService
+@inject PathHelper PathHelper
+
+@Power.VisualizationView(new { Area = "Survey", Action = "Statistics"})
+@model Questionnaire
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("wjtc");
+    var node = NodeService.GetNodeByIdentifier("wjtc");
+    ViewBag.PageTitle = "问卷提交成功_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.bodyClass = "surveyResultPage";
+    var statistics = ViewBag.Statistics as SurveyStatisticsViewModel;
+}
+@section header {
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/_common/survey/css/survey.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content" class="noSideContent">
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+                <h3><span>@(node?.NodeName)</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <div class="surveyResult">
+                    @Power.Partial("问卷统计结果", new { SurveyStatisticsViewModel = statistics })
+                    <div id="choice">
+
+                        <a href="@PathHelper.GetContentUrl(Model.ContentRouteUrl)">返回问卷</a>
+
+                        <a href="@Url.Action("List")">返回问卷列表</a>
+
+                    </div>
+
+                </div>
+
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->
+
+@section scripts{
+    <script src="~/content/_common/assets/scripts/echarts.js" asp-append-version="true"></script>
+    <script src="~/content/_common/survey/js/statistics.js" asp-append-version="true"></script>
+}

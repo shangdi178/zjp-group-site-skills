@@ -1,0 +1,58 @@
+﻿@*单页模板*@
+@Power.VisualizationView(new { Area = "ContentManage", Controller = "Node"})
+@model Node
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+}
+@section header {
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content">
+
+    <!-- mainContent S -->
+    <div class="mainContent">
+        @Power.Partial("节点归档图标", new { Node = Model })
+        @NodeInterfaceExtend.NodeHits(Model)
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = Model })</div>
+                <h3><span>@Model.NodeName</span></h3>
+            </div>
+
+                <!-- 正文内容 S -->
+                <div class="articleCon">
+                    <div class="printArea" data-power-area='content'>
+                        <!-- 标题 -->
+                        <h3 class="title">@Model.NodeName</h3>
+                        <div class="property">
+                            <span>【字体：<a href="javascript:;" data-power-command="reducefont">小</a> <a href="javascript:;" data-power-command="enlargefont">大</a>】</span>
+                        </div>
+                        <!-- 正文 -->
+                        <div class="conTxt" data-power-defaultFontSize="14" data-power-defaultLineHeight="2" data-power-imgMaxWidth="800">
+                            <div class="" id="fontzoom">
+                                
+@Model.Description()
+                            </div>
+                        </div>
+                    </div>
+                    <div class="userControl" style="border-bottom:0">
+                        @*@Power.Partial("分享按钮")*@
+@inject NodeInterfaceExtend NodeInterfaceExtend
+
+                    </div>
+                </div>
+                <!-- 正文内容 E -->
+
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->
+
+@section scripts{
+    <script src="~/content/_common/assets/scripts/jquery.PrintArea.js" asp-append-version="true"></script>
+    <script src="~/content/_common/assets/ueditor/ueditor.parse.min.js" asp-append-version="true"></script>
+    <script src="~/content/_common/base/js/article.js" asp-append-version="true"></script>
+}

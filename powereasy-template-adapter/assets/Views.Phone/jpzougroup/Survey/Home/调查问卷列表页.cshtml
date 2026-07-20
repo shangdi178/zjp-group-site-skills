@@ -1,0 +1,32 @@
+﻿@*问卷调查列表页模板*@
+@inject NodeService NodeService
+
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.bodyClass = "surveyListPage";
+    var node = NodeService.GetNodeByIdentifier("wjtc");
+    ViewBag.PageTitle = node.NodeName + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.HeaderTitle = node.NodeName;
+}
+@section header{
+    <link href="~/content.phone/_common/survey/css/survey.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+<div id="content">
+    <div class="mainBox">
+        <div class="mHd">
+            <h3>@(node?.NodeName)</h3>
+        </div>
+        <div class="mBd">
+            <!-- 正文内容 S -->
+            <ul class="surveyCommonList">
+                @Power.Partial("Survey", "问卷列表", new { Count = 10, Paging = true, ShowDate = true, ShowButton = true })
+            </ul>
+            <div class="page">@Power.Partial("通用分页")</div>
+            <!-- 正文内容 E -->
+        </div>
+
+    </div>
+
+</div>

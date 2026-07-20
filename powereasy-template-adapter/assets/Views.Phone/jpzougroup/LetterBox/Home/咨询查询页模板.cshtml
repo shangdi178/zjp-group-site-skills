@@ -1,0 +1,99 @@
+﻿@*咨询查询页模板*@
+@inject NodeService NodeService
+
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("yzxx");
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    ViewBag.PageTitle = "结果查询_" + node?.NodeName + "_" + this.Context.GetCurrentSite().SiteTitle;
+    var phoneInquiryRequired = LetterBoxConfig.Instance.TelephoneInquiryRequired;
+    ViewBag.HeaderTitle = "咨询查询";
+}
+<div class="path">@Power.Partial("位置导航", new { Node = node }) &gt;<span>结果查询</span></div>
+<div id="content">
+    <div class="queryForm">
+        @using (Html.BeginForm("QueryResult", "home", FormMethod.Post, new { id = "queryResultForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            <table>
+                @if (phoneInquiryRequired)
+                {
+                    <tr>
+                        <td class="tdlab required"><strong>*</strong>联系电话：</td>
+                        <td class="inputclass">@Html.TextBox("Telephone")</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="tdlab required"><strong>*</strong>查询码：</td>
+                    <td>@Html.TextBox("ApplicationFormNumber")</td>
+                </tr>
+                <tr>
+                    <td class="tdlab required"><strong>*</strong>验证码：</td>
+                    <td>@Power.Control.Captcha("ValidateCode")</td>
+                </tr>
+                <tr class="bot">
+                    <td>&nbsp;</td>
+                    <td>
+                        <a id="queryResult" href="javascript:;">查询</a>
+                        <span class="errorMessage"></span>
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+</div>
+<script src="~/content/_common/base/js/power.ui.captcha.js" asp-append-version="true"></script>
+<script src="~/content/_common/base/js/power.security.csrf.js" asp-append-version="true"></script>
+
+<script>
+    $(function () {
+        window.setCaptchaCallback(function () {
+            $("#queryResultForm").find('.errorMessage').text('')
+        });
+        var telephone = $('#Telephone'),
+            $applicationFormNumber = $('#ApplicationFormNumber'),
+            $validateCode = $('#ValidateCode');
+
+        $('#queryResult')
+            .on('click',
+                function () {
+                    
+                     @if (phoneInquiryRequired)
+                    {
+                        <text>
+                          if (!$.trim(telephone.val())) {
+                              $("#queryResultForm").find('.errorMessage').text('请输入联系电话。');
+                              telephone.focus();
+                              return false;
+                          }
+                        </text>
+                    }
+
+                    if (!$.trim($applicationFormNumber.val())) {
+                        $("#queryResultForm").find('.errorMessage').text('请输入查询码。');
+                        $applicationFormNumber.focus();
+                        return false;
+                    }
+
+                    var captchaTicketId = $("#js-ticketId").val();
+                    var captchaTicket = $("#js-ticket").val();
+                    if ($(this.closest('form')).find('.codeinp').length!=0 &&(!captchaTicket || !captchaTicketId)) {
+                        window.captcha.autoShowCaptcha(this,"js-btn-verify");
+                        return false;
+                    }
+
+                    $("#queryResultForm").find('.errorMessage').text('');
+                    $("#queryResultForm").submit();
+                    return true;
+                });
+        $(document)
+            .on("keyup",
+                function (e) {
+                    e = e || event;
+                    if (e.keyCode === 13) {
+                        $('#queryResult').trigger('click');
+                    }
+                });
+    });
+</script>

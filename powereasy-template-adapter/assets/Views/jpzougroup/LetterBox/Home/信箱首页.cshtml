@@ -1,0 +1,66 @@
+﻿@*咨询首页模板*@
+@inject NodeService NodeService
+@inject LetterCategoryService LetterCategoryService
+
+@Power.VisualizationView(new { Area = "LetterBox" })
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("xygk");
+    ViewBag.NavigationIdentifier.Add("yzxx");
+    var node = NodeService.GetNodeByIdentifier("yzxx");
+    ViewBag.PageTitle = node?.NodeName + "_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.bodyClass = "letterListPage";
+    var letterCategorys = LetterCategoryService.GetChildren();
+}
+@section header {
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/letterbox/css/letterbox.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content">
+    <!-- side S -->
+    <aside class="side">
+        @Power.Partial("侧栏-通用", new { Node = node })
+    </aside>
+    <!-- side E -->
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+                <h3><span>@node?.NodeName</span></h3>
+             </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+
+                <!-- 栏目循环 S -->
+                <div class="pageBoxLoop1">
+                @if (letterCategorys != null)
+                {
+                    foreach (var item in letterCategorys)
+                    {
+                        <div class="pageBox">
+                            <div class="hd ">
+                                <a href="@Power.Url.LetterBoxWriteUrl(item.CategoryId)" class="more">我要咨询</a>
+                                <h3><a href="@Power.Url.LetterBoxListUrl(item.CategoryId)">@item.CategoryName</a></h3>
+                            </div>
+                            <div class="bd">
+                                @Power.Partial("分类咨询列表", new { id = item.CategoryId, count = 5, fromIndex = true })
+                            </div>
+                        </div>
+                    }
+                }
+                </div>
+                <!-- 栏目循环 E -->
+
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->
+

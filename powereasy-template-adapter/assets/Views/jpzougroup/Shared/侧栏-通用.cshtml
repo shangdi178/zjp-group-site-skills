@@ -1,0 +1,21 @@
+﻿
+@Power.VisualizationPartialView(new
+{
+    Description = "侧栏-通用",
+    Parameters = new
+    {
+        Node = new { DisplayName = "节点实体", Type = "Unknown" },
+        HotNewsNode = new { DisplayName = "新节点实体", Type = "Unknown" },
+        ShowHotNews = new { DisplayName = "是否显示热点资讯", Type = "Boolean", DefaultValue = false,  ControlType = "Boolean" }
+    }
+})
+@{
+    var node = Param.Node;
+    var newsNode = Param.NewsNode ?? node;
+    bool ShowHotNews = Param.ShowHotNews??false;
+}
+@Power.Partial("侧栏-栏目菜单", new { Node=node })
+@if(ShowHotNews){
+    <div id="datalist"></div>
+    @Power.AjaxPartial("侧栏-热点资讯", new { newsNode.NodeId }, new AjaxOptions { UpdateTargetId = "datalist", InsertionMode = InsertionMode.InsertAfter }, null, 15)
+}

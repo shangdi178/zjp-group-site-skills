@@ -1,0 +1,20 @@
+﻿@Power.VisualizationPartialView(new
+{
+    Description = "网站底部"
+})
+<!-- footer S -->
+<footer id="footer">
+    <!--<div class="footNav">
+        @Power.Partial("节点列表", new { NodeIdentifier = "qt", ShowLi = false })
+    </div>-->
+    <div class="copyRight">
+		@this.Context.GetCurrentSite().Copyright.ToHtml()
+	</div>
+    <div class="btns">
+        @Power.ForceUserAgent("pc", "电脑版")
+        @* @Power.ForceUserAgent("pad", "平板版") *@
+
+
+    </div>
+</footer>
+<!-- footer E -->

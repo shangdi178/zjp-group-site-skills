@@ -1,0 +1,36 @@
+﻿@*列表页模板*@
+@inject NodeInterfaceExtend NodeInterfaceExtend
+
+@model Node
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.HeaderTitle = Model.NodeName;
+}
+
+@section header {
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">@Power.Partial("位置导航", new { Node = Model })</div>
+<!-- content S -->
+<div id="content">
+    @Power.Partial("节点归档图标", new { Node = Model })
+    @NodeInterfaceExtend.NodeHits(Model)
+
+    <div class="mainBox">
+
+        <div class="mHd">
+            <h3>@Model.NodeName</h3>
+        </div>
+        <div class="mBd">
+            <!-- 正文内容 S -->
+            <ul class="newsList" id="datalist"></ul>
+            <a class="moreBtn" id="loadmore" data-ui-type="ajaxbutton" data-ajax-data="contentList">查看更多</a>
+            @Power.AjaxArticleList("文章标题列表", new { Paging = true, Node = Model.Identifier, TitleLength = 200, ShowDate = true, DateFormat = "MM-dd" }, new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "datalist", InsertionMode = InsertionMode.InsertAfter }, new { id = "contentList", RefNode = true })
+            <!-- 正文内容 E -->
+        </div>
+
+    </div>
+
+</div>
+<!-- content E -->

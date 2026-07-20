@@ -1,0 +1,76 @@
+﻿@inject NodeService NodeService
+@inject StringExtensionsHelper StringExtensionsHelper
+@inject ContentRouteUrlHelperExtend ContentRouteUrlHelperExtend
+@Power.VisualizationPartialView(new
+{
+    Description = "文章图文列表-样色",
+    Parameters = new
+    {
+        TitleLength = new { DisplayName = "标题长度", Type = "Int32", ControlType = "Integer", DefaultValue = 50 },
+        ContentLength = new { DisplayName = "内容长度", Type = "Int32", ControlType = "Integer", DefaultValue = 200 },
+        DisplayNodeName = new { DisplayName = "显示节点名称", Type = "Boolean", ControlType = "Boolean", DefaultValue = false },
+        ImageWidth = new { DisplayName = "图片宽度", Type = "Int32", ControlType = "Integer", DefaultValue = 200 },
+        ImageHeight = new { DisplayName = "图片高度", Type = "Int32", ControlType = "Integer", DefaultValue = 150 },
+        DispatchDepartment = new { DisplayName = "部门标识符" }
+    }
+})
+@model Article
+@{
+    //参数
+    int TitleLength = Param.TitleLength ?? 50; //标题长度
+    int ContentLength = Param.ContentLength ?? 200; //内容长度
+    var DisplayDateTime = Param.DisplayDateTime ?? ""; //日期格式
+    var DisplayNodeName = Param.DisplayNodeName ?? false; //显示节点名称
+    int ImageWidth = Param.ImageWidth ?? 200; // 图片宽度
+    int ImageHeight = Param.ImageHeight ?? 150; // 图片高度
+    var node = NodeService.GetEntity(x => x.NodeId == Model.NodeId);
+    var target = Param.LinkBlankTarget == true && node != null && node.ContentOpenInNewTarget ? "_blank" : null;
+}
+
+@if ((int)Row.Index == 0)
+{
+    <li class="noData">暂无资料</li>
+    return;
+}
+<li class="@Row.PositionLiteral @Row.IntervalLiteral @Row.HighRankLiteral">
+
+    <div class="title">
+        <a target="@target" class="tit" href="@ContentRouteUrlHelperExtend.ContentUrl(Model)" title="@Model.Title">@Model.Title.CutText(TitleLength, "…")</a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.FeaturedImage))
+    {
+        <div class="pic">
+            <a target="@target" href="@ContentRouteUrlHelperExtend.ContentUrl(Model)">
+                <img alt="@Model.Title" src="@Power.Thumbnail(StringExtensionsHelper.ToUrl(Model.FeaturedImage), ImageWidth, ImageHeight)" />
+            </a>
+        </div>
+    }
+
+    <div class="con">
+
+        @if (ContentLength > 0)
+        {
+            <div class="intro">
+                @Model.Intro(ContentLength, "...")
+            </div>
+        }
+
+        <div class="others">
+            @if (DisplayNodeName)
+            {
+                <span class="node">[@Param.Node.NodeName]</span>
+            }
+            @if (!string.IsNullOrEmpty(DisplayDateTime))
+            {
+                <span class="date">@Model.PublishTime.ToString(DisplayDateTime)</span>
+            }
+        </div>
+
+    </div>
+
+</li>
+@if (Row.IsSplit)
+{
+    <li class="split"></li>
+}

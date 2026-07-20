@@ -1,0 +1,40 @@
+﻿@*投票提示页模板*@
+@inject NodeService NodeService
+
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.bodyClass = "voteTipsPage";
+    var node = NodeService.GetNodeByIdentifier("zxtp");
+    ViewBag.PageTitle = "提示信息_" + node.NodeName + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.HeaderTitle = "提示信息";
+}
+@section header{
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+
+<!-- content S -->
+<div id="content">
+
+    <!-- 正文内容 S -->
+    <div class="Showms">
+        <dl class="content">
+            <dd class="content1">
+                <div class="MS">
+                    <dl>
+                        <dt class="titWrong">提示信息</dt>
+                        <dd>@ViewBag.Message</dd>
+                    </dl>
+                </div>
+                <div class="clearbox"></div>
+                <div class="BUT">
+                    <a href="@Url.Action("list")">返回列表</a>
+                </div>
+            </dd>
+        </dl>
+    </div>
+    <!-- 正文内容 E -->
+
+</div>
+<!-- content E -->

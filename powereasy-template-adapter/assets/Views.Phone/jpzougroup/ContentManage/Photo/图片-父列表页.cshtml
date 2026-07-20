@@ -1,0 +1,44 @@
+﻿@*列表页模板*@
+@inject NodeService NodeService
+
+@model Node
+@{
+    Layout = $"~/Views.Phone/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.HeaderTitle = Model.NodeName;
+}
+
+@section header {
+    <link href="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<div class="path">@Power.Partial("位置导航", new { Node = Model })</div>
+<!-- content S -->
+<div id="content">
+
+    <!-- 正文内容 S -->
+    <div class="boxLoop">
+
+        @{
+            var nodeService = NodeService;
+            var childNodes = nodeService.GetChildNodeList(Model).Take(999);
+        }
+
+        @foreach (Node childNode in childNodes.Where(n => n.ShowOnParentNodeList))
+        {
+            <div class="mainBox">
+                <div class="mHd">
+                    <h3 class="title">@Power.Url.NodeLink(childNode.Identifier)</h3>
+                </div>
+                <div class="mBd">
+                    <ul class="picListFl">
+                        @Power.PhotoList("图片列表", new { Count = 4, Node = childNode.Identifier , TitleLength = 60, RefNode = true })
+                    </ul>
+                    <a class="moreBtn" href='@Power.Url.NodeUrl(childNode.Identifier)'>查看更多&gt;&gt;</a>
+                </div>
+            </div>
+        }
+    </div>
+    <!-- 正文内容 E -->
+
+</div>
+<!-- content E -->

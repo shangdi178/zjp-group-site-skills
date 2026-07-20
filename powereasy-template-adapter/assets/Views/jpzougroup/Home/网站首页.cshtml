@@ -1,0 +1,62 @@
+﻿@*站点首页模板*@
+@Power.VisualizationView(new { Area = "SiteManage", Controller = "Site" })
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+}
+@section header {
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/home/css/index.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!--indBanner S-->
+<div id="indBanner" class="indBanner">
+    @Power.Partial("广告版位-焦点图",new{ImageWidth=1200, ImageHeight=536, Id=189})
+    
+</div>
+
+
+<script language="javascript"> jQuery("#indBanner").slide({ mainCell:".bd ul",effect: "left",delayTime:800,interTime:4000,autoPlay:true});</script>
+
+<!-- content S -->
+<div id="content">
+
+    <!-- columnA S -->
+    <div class="column" id="columnA">
+        <div class="areaL">
+            <!-- 团队动态 -->
+            <div class="boxA" id="indTzgg">
+                <div class="hd">
+                    @Power.Url.NodeLink("tddt", "More+", new { @class = "more" })
+                    <h3>@Power.Url.NodeLink("tddt")</h3>
+                </div>
+                <div class="bd">
+                    <ul class="infoList">
+                        @Power.ArticleList("文章图文列表", new { Node = "tddt", Count = 5, TitleLength = 160, ContentLength = 300, ImageWidth=110, ImageHeight=90, Sort="Priority,PublishTime",SortOrder="desc,desc",DisplayDateTime="yyyy-MM-dd", RefNode = true })
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        
+           <div class="areaC">
+            <!-- 加入我们 -->
+            <div class="boxA" id="indTzgg">
+                <div class="hd">
+                    @Power.Url.NodeLink("jrwm", "More+", new { @class = "more" })
+                    <h3>@Power.Url.NodeLink("jrwm")</h3>
+                </div>
+                <div class="bd">
+                   @Power.Partial("节点配置信息", new { NodeIdentifier = "jrwm", DisplayType = 10, ContentLength = 0 })
+                </div>
+            </div>
+        </div>
+        
+        
+        </div>
+    </div>
+    <!-- columnA E -->
+
+</div>
+<!-- content E -->
+
+
+@Power.Partial("广告版位-漂浮",new{ImageWidth=200, ImageHeight=136, Id=143})

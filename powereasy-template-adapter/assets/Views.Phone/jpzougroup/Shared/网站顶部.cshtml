@@ -1,0 +1,47 @@
+﻿@inject SiteService SiteService
+@Power.VisualizationPartialView(new
+{
+    Description = "网站顶部"
+})
+@{
+    var searchUrl = Power.Url.FulltextSearchUrl();
+    var searchIndex = Power.Url.FulltextSearchIndexUrl();
+    var siteService = SiteService;
+    var currentSiteId = SiteContext.Current.SiteId;
+    var currentSite = siteService.GetEntity(currentSiteId);
+}
+<!-- header S -->
+<header id="header" class="clearfix">
+
+    <dl class="topNav">
+        <dt showId="#JS_hideBox2"></dt>
+        <dd id="JS_hideBox2" hideBox>
+            <ul class="mainNav">
+                @Power.Partial("节点导航")
+            </ul>
+        </dd>
+    </dl>
+
+    <dl class="siteSearch">
+        <dt showId="#JS_hideBox1"></dt>
+        <dd id="JS_hideBox1" hideBox>
+            @Power.Partial("网站搜索")
+        </dd>
+    </dl>
+
+    <h1 title="@this.Context.GetCurrentSite().SiteTitle" id="logo"><a href="@Power.Url.SiteUrl(currentSite.Subdomain)"><img src="~/content.phone/@(this.Context.GetCurrentSite().Identifier)/base/img/logo.png" /></a></h1>
+
+    <a href="javascript:history.go(-1)" class="back"></a>
+
+    <h3 class="title">@ViewBag.HeaderTitle</h3>
+
+    <script>
+        //二级导航显示隐藏
+        $(".mainNav .sh")
+            .click(function () {
+                $(this).parent().parent().toggleClass("showSubMenu").siblings().removeClass("showSubMenu");
+            });
+    </script>
+
+</header>
+<!-- header E -->

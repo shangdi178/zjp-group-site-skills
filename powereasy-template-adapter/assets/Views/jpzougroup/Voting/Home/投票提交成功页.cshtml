@@ -1,0 +1,54 @@
+﻿@*投票提交成功页模板*@
+@inject NodeService NodeService
+
+@Power.VisualizationView(new { Area = "Voting", Action = "SubmitVoteResult"})
+@{
+    Layout = $"~/Views/{this.Context.GetCurrentSite().Identifier}/Layout/公共布局页.cshtml";
+    ViewBag.NavigationIdentifier.Add("zxtp");
+    var node = NodeService.GetNodeByIdentifier("zxtp");
+    ViewBag.PageTitle = "投票提交成功_"+ node.NodeName +"_" + this.Context.GetCurrentSite().SiteTitle;
+    ViewBag.bodyClass = "voteTipsPage";
+}
+@section header
+{
+    <link href="~/content/@(this.Context.GetCurrentSite().Identifier)/contentmanage/css/page.css" asp-append-version="true" rel="stylesheet" />
+    <link href="~/content/_common/voting/css/vote.css" asp-append-version="true" rel="stylesheet" />
+}
+
+<!-- content S -->
+<div id="content" class="noSideContent">
+    <!-- mainContent S -->
+    <div class="mainContent">
+        <div class="mainBox">
+            <div class="mHd">
+                <div class="path">@Power.Partial("位置导航", new { Node = node })</div>
+                <h3><span>@node.NodeName</span></h3>
+            </div>
+            <div class="mBd">
+
+                <!-- 正文内容 S -->
+                <div class="Showms">
+                    <div class="MS">
+                        <dl>
+                            <dt class="titWrong">提交成功！</dt>
+                            <dd>感谢您的投票</dd>
+                        </dl>
+                    </div>
+                    <div class="clearbox"></div>
+                    <div class="BUT">
+                        <a id="LnkReturnUrl" href="javascript:window.close();">关闭</a>
+                        <a href="@Url.Action("list")" target="_blank">返回列表</a>
+                        @if (Model.EnablePublic)
+                        {
+                            <a href="@this.ViewBag.StatisticsUrl">查看投票结果</a>
+                        }
+                    </div>
+                </div>
+                <!-- 正文内容 E -->
+
+            </div>
+        </div>
+    </div>
+    <!-- mainContent E -->
+</div>
+<!-- content E -->

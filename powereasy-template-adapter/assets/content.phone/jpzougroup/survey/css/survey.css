@@ -1,0 +1,248 @@
+﻿@charset "UTF-8";
+/* 问卷调查列表页 ----------------------------------------------------- */
+.surveyListPage .surveyList {
+  padding-bottom: 10px; }
+
+.surveyListPage .surveyList li {
+  border-bottom: 1px dotted #ddd;
+  padding: 5px 0; }
+
+.surveyListPage .surveyList li::before {
+  content: "\e624";
+  font-family: iconfont;
+  color: #076a97;
+  display: block;
+  float: left;
+  margin-right: 6px; }
+
+.surveyListPage .surveyList a {
+  overflow: hidden;
+  display: block; }
+
+/* 问卷调查内容页 ---------------------------------------------- */
+#surveySubmit {
+  padding: 0 0 15px 0;
+  text-align: center; }
+
+#surveySubmit a, #surveySubmit input {
+  padding: 0 15px;
+  height: 36px;
+  line-height: 36px;
+  display: inline-block;
+  cursor: pointer;
+  margin-right: 15px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background: #eee;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#eee));
+  background: -moz-linear-gradient(#fff, #eee);
+  background: -ms-linear-gradient(#fff, #eee);
+  background: -o-linear-gradient(#fff, #eee);
+  background: linear-gradient(#fff, #eee);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px; }
+
+#surveySubmit input {
+  cursor: pointer;
+  height: 38px;
+  color: #333; }
+
+#surveySubmit a:hover, #surveySubmit input:hover {
+  color: #c00;
+  border: 1px solid #aaa;
+  text-decoration: none; }
+
+#SurveyBox #SurveyTitle {
+  padding: 15px 0;
+  font-size: 24px;
+  line-height: 1.5;
+  text-align: center; }
+
+#SurveyBox dt {
+  background: #f2f2f2;
+  padding: 8px 10px;
+  line-height: 1.5; }
+
+#SurveyBox dd {
+  padding: 5px 0 25px 0;
+  font-size: 14px;
+  line-height: 1.5; }
+
+#SurveyBox dd ul {
+  padding: 0 10px; }
+
+#SurveyBox dd li {
+  padding: 4px 0; }
+
+#SurveyBox dd .otherInput {
+  height: 20px;
+  line-height: 20px;
+  padding: 4px;
+  border: 1px solid #ccc;
+  margin-left: 8px;
+  width: 70%; }
+
+#SurveyBox .SurveyDescription {
+  padding: 6%;
+  text-indent: 2em;
+  font-size: 14px;
+  background: #fff;
+  margin-bottom: 20px;
+  border: 1px dotted #ddd; }
+
+#SurveyBox textarea {
+  margin-top: 5px;
+  width: 100%;
+  border: 1px solid #ccc;
+  height: 100px; }
+
+#SurveyBox .code input[type=text] {
+  width: 18%;
+  border: 1px solid #ccc;
+  height: 30px;
+  padding: 0 10px; }
+
+/* 问卷调查结果页模板 */
+.surveyResult #SurveyTitle {
+  text-align: center;
+  font-size: 24px;
+  line-height: 1.5;
+  padding: 10px 0 0 0; }
+
+#message {
+  margin: 20px 0;
+  font-size: 14px; }
+
+.statisticshow {
+  border: 1px dotted #ccc;
+  display: block;
+  padding: 5px 10px;
+  background: #f6f6f6; }
+
+.public-span {
+  margin-right: 20px;
+  color: #8b8b8b; }
+
+.public-span span {
+  color: #000000; }
+
+.public-span:last-child {
+  display: block; }
+
+.graphPater {
+  overflow: hidden;
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #ddd; }
+
+.graphPater:last-child {
+  margin-bottom: 10px; }
+
+.option, .value, .ratio {
+  font-size: 14px;
+  width: 20%;
+  float: left; }
+
+.value {
+  width: 25%; }
+
+.option {
+  width: 55%; }
+
+.option ul, .value ul, .ratio ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0; }
+
+.option ul li, .value ul li, .ratio ul li {
+  padding: 5px 0;
+  text-align: center; }
+
+.option ul li:first-child, .value ul li:first-child, .ratio ul li:first-child {
+  padding: 0;
+  background-color: #eee;
+  height: 30px;
+  line-height: 30px; }
+
+.graph {
+  height: 280px;
+  width: 100%; }
+
+.statistictitle {
+  line-height: 1.5;
+  margin-bottom: 5px;
+  display: block;
+  color: #076a97; }
+
+.statisticsurvey {
+  color: #999;
+  display: block;
+  font-size: 14px; }
+
+.statisticsurvey span:nth-child(2n) {
+  padding: 0 20px 0 0; }
+
+.number-result {
+  width: 50%;
+  height: 50%; }
+
+.number-result span {
+  display: block;
+  text-align: center; }
+
+.number-total {
+  font-size: 24px; }
+
+.number-value {
+  font-size: 30px; }
+
+.number-container {
+  border: solid 1px #c0c0c0;
+  width: 100%; }
+
+#choice {
+  padding: 25px 0 15px 0;
+  text-align: center; }
+
+#choice a {
+  padding: 0 15px;
+  height: 36px;
+  line-height: 36px;
+  display: inline-block;
+  cursor: pointer;
+  margin-right: 15px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background: #eee;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#eee));
+  background: -moz-linear-gradient(#fff, #eee);
+  background: -ms-linear-gradient(#fff, #eee);
+  background: -o-linear-gradient(#fff, #eee);
+  background: linear-gradient(#fff, #eee);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px; }
+
+#choice a:hover {
+  color: #c00;
+  border: 1px solid #aaa;
+  text-decoration: none; }
+
+/*  ---------------------------------------------- */
+.surveyQA table {
+  border: 1px solid #d8d8d8;
+  width: 100% !important; }
+
+.surveyQA table td {
+  text-align: left; }
+
+.surveyQA table table {
+  border: 0; }
+
+.surveyQA table table td {
+  padding: 10px 20px;
+  border-bottom: 1px dotted #d8d8d8; }
+
+.surveyQA table td div {
+  padding-bottom: 20px; }
