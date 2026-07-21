@@ -312,6 +312,118 @@ document.addEventListener('visibilitychange', () => { document.hidden ? stopSlid
 - 列表页：`{NestedIdentifier}{?_{pageid}}`
 - 内容页：`{NestedIdentifier}/content_{id}{?_{pageid}}`
 
+## 📐 团队成员详情页模板（教师/学生/毕业生）
+
+所有团队成员详情页（侯冬梅、吴美凤、张龙帅、余建等）应统一使用与 PI 页相同的布局框架：
+
+```
+pi-people-page          → 最外层卡片容器
+  pi-profile-head       → 头像 + 姓名职称 + 联系方式 + 个人简介
+    pi-portrait        → 头像图片（200×267 比例）
+    pi-name-block      → 姓名 + 职称
+    pi-meta-list        → 邮箱、研究方向等
+    pi-intro-block     → 个人简介
+  pi-cv-content         → 教育经历 / 工作经历 / 科研项目（纯文本列表）
+```
+
+### 头像规则
+
+- 有真实照片：用 `<img>` 标签，图片放 `content/.../home/img/`
+- 无照片：用姓名字母占位（div + background gradient + 首字），保持方形 `border-radius:var(--radius-md)`
+- 尺寸桌面 130×160px，手机 110×135px
+
+### 教师队伍卡片规则
+
+整张卡片是 `<a>` 链接，点击跳转到个人详情页：
+
+```html
+<a class="member-card" href="@Power.Url.NodeUrl("wmf")">
+  <div class="avatar"><img src="..." alt="..." /></div>
+  <h3>吴美凤</h3><p class="role">副教授</p>
+</a>
+```
+
+- 头像方形（`border-radius:var(--radius-md)`），不用圆形
+- 卡片内不含研究方向和邮箱（精简）
+- 手机端头像 110×135px，桌面 130×160px
+
+### member-tabs 居中导航
+
+```css
+.member-tabs {
+  display:flex; justify-content:center; gap:6px;
+  padding:20px 20px 0; flex-wrap:wrap;
+  max-width:var(--max-width); margin:0 auto;
+}
+```
+必须设置 `max-width + margin:0 auto` 才能在页面中居中。
+
+## 🧭 导航高亮 JS 模式
+
+### 职责
+`main.js` 中的导航高亮逻辑负责为当前页面所在的导航项添加 `.on1` 类。
+
+### 标准实现
+
+```javascript
+var items = document.querySelectorAll('.mainNav .li1, .drawer-menu-item');
+var cur = window.location.pathname.replace(/\/$/, '') || '/';
+items.forEach(function(li) {
+  var a = li.querySelector('a:not([onclick])');
+  if (!a) return;
+  var href = a.getAttribute('href');
+  if (!href) return;
+  // 提取路径部分：完整URL只取路径名
+  try { var url = new URL(href); href = url.pathname; } catch(e) {}
+  var hrefClean = href.replace(/\/$/, '') || '/';
+  var curClean = cur.replace(/\/$/, '') || '/';
+  // 精确匹配，或子路径匹配父导航（如 /tdcy/en-ktzfzr 匹配 /tdcy）
+  if (hrefClean === curClean || (hrefClean.length > 1 && curClean.indexOf(hrefClean + '/') === 0)) {
+    li.classList.add('on1');
+  }
+});
+```
+
+### 常见错误
+
+| 错误 | 后果 | 正确做法 |
+|------|------|---------|
+| `cur.indexOf(href)` 不做长度保护 | 根路径 `/` 匹配所有导航项 | 加 `hrefClean.length > 1` 过滤 |
+| 直接用 `href` 不做 URL 解析 | 完整 URL(https://...) 和路径名无法匹配 | 用 `new URL()` 提取 `.pathname` |
+| 只用 `active` 不用 `on1` | CSS 用 `.on1` 但 JS 加的是 `active` | 两个都加，或统一使用 CSS 类名 |
+
+## 🎬 CSS 过渡动效添加规则
+
+### 基本原则
+- `transition` 属性必须写在**基础规则**（非 hover）中
+- 如果媒体查询覆盖了基础规则，**必须同时保留 `transition` 属性**
+
+```css
+/* ✅ 正确：transition 在基础规则中 */
+.mainNav .li1 .a1 {
+  transition: background .3s ease, color .3s ease;
+}
+.mainNav .li1 .a1:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+/* ❌ 错误：手机覆盖丢失 transition */
+@media (...) {
+  .mainNav .li1 .a1 { font-size:.82rem; }  /* 这里丢了 transition */
+}
+
+/* ✅ 正确：保留 transition */
+@media (...) {
+  .mainNav .li1 .a1 { font-size:.82rem; transition: background .3s ease; }
+}
+```
+
+### 滚动进场动画 CSS 类匹配检查清单
+- JS 使用的类名：`.will-animate`、`.is-visible`
+- CSS 对应的选择器必须匹配 JS 使用的类名，不能出现 `.animate-item.will-animate` 而 JS 只加 `will-animate` 的情况
+- JS 添加 `.will-animate` 的元素必须与 CSS 选择器范围一致
+- 验收：禁用 JS 后元素仍然可见
+
 ## 📸 快速验证
 
 ```javascript

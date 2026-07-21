@@ -194,6 +194,35 @@ logo 实际文件位于 `content/jpzougroup/base/img/nchu-logo.png`（292×282 �
 - 若线上 HTML 加载 `/content.phone/...`，必须同时检查 Phone 模板、Phone CSS、Phone JS 和 Phone 图片是否成套存在。
 - 选择统一响应式方案时，优先在 PC 模板和 `content/jpzougroup` 中修复；选择独立 Phone 方案时，必须补齐所有业务页面和公共脚本，不能只复制首页。
 
+### 站点标题截断
+
+**问题**：CMS 后台站点标题配置为"邹建平课题组-南昌航空大学"，页头直接显示 `siteTitle` 时会包含"南昌航空大学"。
+
+**修复**：在 `网站顶部.cshtml` 中做截断：
+```csharp
+var displayTitle = siteTitle.Contains("-") ? siteTitle.Substring(0, siteTitle.IndexOf("-")) : siteTitle;
+```
+然后在模板中使用 `displayTitle` 替代 `siteTitle`。
+
+### 新增页面流程
+
+新增一个业务页面（如"技术应用"）需要在 **5 处同步修改**：
+
+| 修改位置 | 文件 | 操作 |
+|----------|------|------|
+| 中文桌面导航 | `网站顶部.cshtml` 中 `<nav class="mainNav">` 中文区 | 添加 `<div class="li1"><a href="@NodeUrl("jsyy")">技术应用</a>` |
+| 英文桌面导航 | 同上，英文区 | 添加 `<div class="li1"><a href="@NodeUrl("en-jsyy")">Applications</a>` |
+| 中文抽屉导航 | 同上，drawer-menu 中文区 | 添加 `<div class="drawer-menu-item"><a href="@NodeUrl("jsyy")">技术应用</a>` |
+| 英文抽屉导航 | 同上，drawer-menu 英文区 | 添加 `<div class="drawer-menu-item"><a href="@NodeUrl("en-jsyy")">Applications</a>` |
+| 页脚快捷链接 | `网站底部.cshtml` | 在 footer-grid 中添加对应链接 |
+
+同时创建中英文页面文件：
+```
+Pages/技术应用.cshtml       → 节点标识 jsyy
+Pages/技术应用-英文.cshtml  → 节点标识 en-jsyy
+```
+图片放入 `content/jpzougroup/home/img/`。
+
 ### 搜索实现方案
 
 - **不要依赖 CMS 文章数据库搜索**：硬编码在 `.cshtml` 的内容不会自动进入 CMS ArticleList 索引。
@@ -212,6 +241,28 @@ logo 实际文件位于 `content/jpzougroup/base/img/nchu-logo.png`（292×282 �
 - **英文页面导航 URL**：用 `Url.Content("~/en-yjfx")` 格式（`en-` 前缀），不是 `~/en/yjfx/`
 - **英文首页 URL**：通常是 `/en-sy`，通过 `ViewBag.HomeUrl ?? siteUrl + "/en-sy"` 设置
 - **ViewBag.Lang 设置时机**：头部模板在页面体之前执行，需要在 header partial 的 `@{ }` 块中从 `Request.Query["lang"]` 检测语言
+
+### 技术应用页内容框架
+
+新业务页面（如"技术应用"）的推荐内容结构：
+
+| 板块 | 用途 | 样式 |
+|------|------|------|
+| 首图+简介 | 左文右图双栏，展示主视觉 | `home-intro-grid` |
+| 核心技术 | 4 张卡片，图标+标题+描述 | `research-detail-card` + `rd-img` |
+| 专利数据 | 4 个统计数字展示 | `stats-grid` 居中 |
+| 工程示范 | 项目卡片列表 | `member-grid` 改 `grid-template-columns` |
+
+### 团队成员页面一致性规则
+
+所有团队成员页面（教师详情、博士、硕士、毕业生）必须保持一致的卡片和头像风格：
+
+- 头像统一方形（`border-radius:var(--radius-md)`），禁止圆形
+- 有照片显示照片，无照片用 gradient + 首字占位
+- 卡片只显示姓名和职称（不显示研究方向和邮箱）
+- 教师卡片作为 `<a>` 链接跳转到详情页
+- 学生和毕业生卡片保持 `<div>`，只做展示
+- 详情页统一使用 PI 页的 `pi-people-page` 框架
 
 ### 手机端首页美化要点
 
