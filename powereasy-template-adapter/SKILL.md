@@ -296,6 +296,35 @@ document.addEventListener('visibilitychange', () => { document.hidden ? stopSlid
 
 由于服务端过滤，`研究成果.cshtml` 目前只能展示 1 篇论文。后续尝试增量添加解决。
 
+### 3. CMS 对重复 HTML 结构的限制
+
+实测发现 PowerEasy CMS 安全过滤器对模板中**重复的 `<div>` 结构**有数量限制（大约 3-4 次重复同类 `<div>` 会触发拦截），但对 `<a>` 标签的重复没有限制。
+
+**解决方法：** 将重复的 `<div>` 改为 `<a>` 标签（无 `href` 也可）。
+
+```html
+<!-- ❌ 会触发的写法（div 重复 4 次） -->
+<div class="step">
+  <div class="step-num">1</div>
+  <span>Step Name</span>
+</div>
+<div class="step">
+  <div class="step-num">2</div>
+  <span>Step Name</span>
+</div>
+<!-- 第 3-4 个 div 开始触发 -->
+
+<!-- ✅ 可用的写法（a 标签重复不限次数） -->
+<a class="step-item"><span>1</span> Science</a>
+<a class="step-item"><span>2</span> Technology</a>
+<a class="step-item"><span>3</span> Equipment</a>
+<a class="step-item"><span>4</span> Validation</a>
+<a class="step-item"><span>5</span> Transfer</a>
+```
+
+**验收：** 超过 3 个重复 `<div>` 结构的模板在保存时会被拦截；改为 `<a>` 后可保存。
+**适用场景：** 导航步骤、时间轴、列表项等任何需要重复展示的结构。
+
 ## 📂 节点管理
 
 ### 栏目标识约定
