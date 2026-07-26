@@ -13,7 +13,7 @@ description: Manage the Jian-Ping Zou Group PowerEasy CMS website across local l
 |------|------|------|
 | **CMS 生产站** | https://jpzougroup.nchu.edu.cn | PowerEasy CMS，对外提供服务 |
 | **CMS 后台** | https://jpzougroup.nchu.edu.cn/admin2019 | 节点管理、内容采编发 |
-| **本地模板源** | `D:\Postgraduate\doctor\课题组网站\live-site\` | Razor 模板 + CSS + JS + 图片 |
+| **本地模板源** | `D:\Postgraduate\doctor\课题组网站\live-site\` | Razor 模板 + CSS + JS + 图片（唯一事实来源） |
 | **静态设计基线** | `D:\Postgraduate\doctor\课题组网站\wwwroot\` | 已完成的 HTML 静态站，作为设计参考 |
 
 ## 🏠 本地目录结构（当前）
@@ -31,15 +31,22 @@ description: Manage the Jian-Ping Zou Group PowerEasy CMS website across local l
 │   │       ├── LetterBox/Home/ # 信箱模块（CMS默认，保留）
 │   │       ├── Survey/Home/    # 问卷（CMS默认，保留）
 │   │       └── Voting/Home/    # 投票（CMS默认，保留）
-│   ├── Views.Phone/            # 移动端视图（镜像桌面端结构）
-│   ├── content/                # 桌面端静态资源
+│   ├── content/                # 静态资源（唯一一套，响应式适配全端）
 │   │   └── jpzougroup/
 │   │       ├── base/css/       # default.css module.css
 │   │       ├── base/js/        # main.js（含轮播动画）
-│   │       ├── home/css/       # index.css
-│   │       ├── home/img/       # 5张轮播图 + 环境楼图片
+│   │       ├── home/css/       # index.css（成员卡片、响应式断点）
+│   │       ├── home/img/       # 按功能分类的子目录
+│   │       │   ├── hero/       # 首页轮播/横幅
+│   │       │   ├── content/    # 页面内容配图
+│   │       │   ├── news/       # 新闻活动配图
+│   │       │   └── members/    # 成员照片（按身份分类）
+│   │       │       ├── professor/
+│   │       │       ├── teachers/
+│   │       │       ├── phd/
+│   │       │       ├── master/
+│   │       │       └── alumni/
 │   │       └── contentmanage/css/page.css
-│   ├── content.phone/          # 移动端静态资源
 │   └── 重构开发文档.md          # 完整开发文档
 │
 ├── wwwroot/             ← 静态 HTML 设计基线
@@ -94,10 +101,8 @@ description: Manage the Jian-Ping Zou Group PowerEasy CMS website across local l
 ## 🔗 文件上传映射
 
 ```
-live-site/Views/jpzougroup/...  →  服务器 /Views/jpzougroup/...
-live-site/Views.Phone/jpzougroup/...  →  服务器 /Views.Phone/jpzougroup/...
-live-site/content/jpzougroup/...  →  服务器 /content/jpzougroup/...
-live-site/content.phone/jpzougroup/...  →  服务器 /content.phone/jpzougroup/...
+live-site/Views/jpzougroup/...      →  服务器 /Views/jpzougroup/...
+live-site/content/jpzougroup/...    →  服务器 /content/jpzougroup/...
 ```
 
 ## 🔄 模板开发工作流
@@ -185,14 +190,25 @@ logo 实际文件位于 `content/jpzougroup/base/img/nchu-logo.png`（292×282 �
 - 左 accent 边框，hover 右移 4px
 - 无数据时显示 fallback 示例新闻
 
-### 手机版 Views.Phone 现状
+### 响应式设计原则（替代独立的 Phone 模板）
 
-`Views.Phone/` 和 `content.phone/` 目录仍不完整，且当前线上访问需要先通过 HTML 资源路径确认是否真的启用 Phone 模板：
+`Views.Phone/` 和 `content.phone/` 已废弃并删除。全站使用**一套模板 + 一套 CSS** 的响应式方案。
 
-- 不要仅凭本地目录存在就判断服务器已经根据 UA 切换到 Phone 模板。
-- 390px 视口测试时，若线上 HTML 仍加载 `/content/jpzougroup/...`，说明当前是桌面模板的响应式适配。
-- 若线上 HTML 加载 `/content.phone/...`，必须同时检查 Phone 模板、Phone CSS、Phone JS 和 Phone 图片是否成套存在。
-- 选择统一响应式方案时，优先在 PC 模板和 `content/jpzougroup` 中修复；选择独立 Phone 方案时，必须补齐所有业务页面和公共脚本，不能只复制首页。
+**响应式断点体系（`content/jpzougroup/home/css/index.css`）：**
+
+| 断点 | 成员卡片 | 头像 | 说明 |
+|------|---------|------|------|
+| > 820px | `auto-fill, minmax(200px,240px)` | 130×160 | 桌面默认 |
+| 768-820px | `repeat(3, 1fr)` | 110×135 | 平板横屏 |
+| ≤ 820px | `repeat(2, 1fr)` | 110×135 | 平板竖屏 |
+| ≤ 560px | `repeat(2, 1fr)` | 90×110 | 大屏手机 |
+| ≤ 420px | `1fr` | 110×135 | 小屏手机（单列） |
+| ≤ 360px | 继承1fr | 缩小padding | 极小屏 |
+
+**CSS 层叠注意事项：**
+- `module.css` 定义在 `base/css/` 中，自带 `repeat(4,1fr)` 与响应式断点（992px/820px/480px）
+- `index.css` 定义在 `home/css/` 中，加载顺序在 `module.css` 之后，同优先级覆盖时生效
+- 关键修复：flex item 需要用 `min-width:0` 确保 `text-overflow:ellipsis` 生效
 
 ### 站点标题截断
 
@@ -275,6 +291,48 @@ Pages/技术应用-英文.cshtml  → 节点标识 en-jsyy
 - 学生和毕业生卡片保持 `<div>`，只做展示
 - 详情页统一使用 PI 页的 `pi-people-page` 框架
 
+### 手机版 English 标题与 Logo 重叠修复
+
+**问题**：英文页头 "Jian-Ping Zou Group" 长标题在小屏手机上与 Logo 重叠。
+
+**根因**：flex item 默认 `min-width: auto`，导致 `overflow:hidden` + `text-overflow:ellipsis` 不生效。
+
+**修复**（在 `#header .header-top-row` 的 `≤820px` 媒体查询中）：
+```css
+/* 修复 flex item 不能收缩的问题 */
+#header .header-site-title { flex:1; min-width:0; overflow:hidden; }
+#header .header-site-title .title-en-primary { 
+  font-size:.75rem; letter-spacing:0; 
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; 
+}
+#header .logo img { height:32px; max-width:80px; }
+#header .header-top-row { gap:10px; }
+```
+
+### 成员照片目录分类规则
+
+`img/members/` 下按身份划分子目录，禁止所有照片混放在 `img/` 根目录：
+
+| 子目录 | 对应身份 | 示例 |
+|--------|---------|------|
+| `professor/` | 课题组负责人 | 邹建平.jpg |
+| `teachers/` | 教师队伍 | 侯冬梅.png, 张龙帅.jpg |
+| `phd/` | 在读博士研究生 | 初楚.jpg, 胡艺.jpg |
+| `master/` | 在读硕士研究生 | 曹江雨.jpg, 邓英.jpg |
+| `alumni/` | 毕业生（含博士/硕士） | 陈颖.jpg, 曹开文.jpg |
+
+非成员图片（hero、content、news）也放在对应的分类子目录中，根 `img/` 不应有文件。
+
+### 毕业生信息补全流程
+
+当用户提供毕业生信息文档（姓名+邮箱+毕业届别），按以下步骤处理：
+
+1. **从文档提取**：姓名、邮箱、毕业届别（如 2021届、2022届）
+2. **重命名源照片**：`{届别}届{学历}毕业生-{姓名}-{邮箱}.{ext}`
+3. **复制到 alumni/**：文件名只用 `{姓名}.{ext}`
+4. **更新毕业生页**：添加 `<p class="role">{届别}届{学历}毕业生</p>` + `<p class="member-email">{邮箱}</p>`
+5. **处理不一致**：文档有但无照片的 → 用文字占位卡；照片有但文档无的 → 确认后删除
+
 ### 手机端首页美化要点
 
 参考 `wwwroot/index.html` 的样式，首页每个模块按以下规则美化：
@@ -346,6 +404,96 @@ $html -match 'Found'
 2. 实际绑定的模板是被修改的文件；
 3. 所需脚本、CSS 和图片文件存在；
 4. 中英文 URL 通过真实访问验证；
-5. 桌面和 390px 手机版均通过交互检查；
+5. **响应式验证**：桌面和 390px 手机版均通过交互检查（一套模板 + CSS，无需独立手机版视图）；
 6. 线上 HTML 能看到新模板的唯一标志；
 7. 没有把服务器或内容待办隐藏在“前端完成”状态之后。
+
+## 团队成员照片上传与处理规则
+
+### 文件命名规范
+
+上传照片命名格式：
+
+`
+{入学年份}级{入学年份}级{学历类别}-{中文名}-{英文名} {邮箱}.{ext}
+`
+
+例如：2023级博士研究生-付倩-Qian Fu 1437625147@qq.com.jpg
+
+| 段 | 说明 | 示例 |
+|----|------|------|
+| 入学年份 | 4位数字入学年份 | 2023 |
+| 学历类别 | 博士研究生 / 硕士研究生 | 博士研究生 |
+| 中文名 | 中文姓名 | 付倩 |
+| 英文名 | 英文姓名（空格分隔） | Qian Fu |
+| 邮箱 | 联系方式 | 1437625147@qq.com |
+
+### 学历 → 页面映射
+
+| 学历类别 | 中文页面 | 英文页面 |
+|---------|---------|---------|
+| 博士研究生 | 博士研究生.cshtml | 博士研究生-英文.cshtml |
+| 硕士研究生 | 硕士研究生.cshtml | 硕士研究生-英文.cshtml |
+| 毕业生 | 毕业生.cshtml | 毕业生-英文.cshtml |
+
+### 处理流程
+
+Step 1: 保存照片到 live-site/content/jpzougroup/home/img/{中文名}.{ext}。
+
+Step 2: 从文件名提取字段：
+- 中文名 -> 卡片标题
+- 英文名 -> 英文章卡标题
+- 学历 -> 博士研究生 -> PhD Student、硕士研究生 -> Master Student
+- 邮箱 -> .member-email 显示
+
+Step 3: 更新中文页面，替换占位卡片：
+
+`
+<div class="member-card">
+  <div class="avatar">
+    <img src="@Url.Content(string.Format("~/content/{0}/home/img/{中文名}.{ext}", site.Identifier))" alt="{中文名}"
+      onerror="this.parentElement.textContent='{姓氏}';this.parentElement.style.background='linear-gradient(135deg,#4facfe,#00f2fe)';this.parentElement.style.color='#fff';this.parentElement.style.fontSize='2.6rem';this.parentElement.style.fontWeight='700';this.remove();" />
+  </div>
+  <h3>{中文名}</h3>
+  <p class="role">{入学年份}级{学历类别}</p>
+</div>
+`
+
+Step 4: 同步更新英文页面同理。
+
+### fallback 色板（按姓氏首字母）
+
+赵->#4facfe->#00f2fe, 钱->#43e97b->#38f9d7, 孙->#fa709a->#fee140
+李->#a18cd1->#fbc2eb, 周->#667eea->#764ba2, 吴->#f093fb->#f5576c
+张->#667eea->#764ba2, 黄->#fa709a->#fee140, 林->#a18cd1->#fbc2eb
+付->#4facfe->#00f2fe, 唐->#43e97b->#38f9d7, 夏->#fa709a->#fee140, 殷->#a18cd1->#fbc2eb, 罗->#667eea->#764ba2, 陆->#4facfe->#00f2fe, 胡->#f093fb->#f5576c, 马->#4facfe->#00f2fe, 黄->#fa709a->#fee140, 未列出的->#667eea->#764ba2
+
+
+
+### 文件名命名变体
+
+实际文件名可能不规范，处理时需识别以下变体：
+
+| 变体 | 示例 | 处理方式 |
+|------|------|---------|
+| 无学历类别 | 2022级-胡艺-Hu Yi-... | 根据所在文件夹判断学历 |
+| 空格代替连字符 | 2024级 夏星源 Xing-Yuan Xia-... | 空格等价于 - |
+| 缺少连字符 | 23级博士研究生罗于-Yu Luo-... | 博士研究生后无 - 也接受 |
+| 邮箱前有空格 | ...- luoyu_buaa@126.com | trim 邮箱前后的空格 |
+| 2位年份 | 23级、24级 | 加 20 前缀 → 2023级 |
+| 英文名含连字符 | Xing-Yuan Xia | 保持原样，不要拆分 |
+
+### 文件名 → 中英文名对照（按姓氏拼音排序处理）
+
+按年级降序排列（高年级在前：2022 > 2023 > 2024 > ...），同年级内按中文姓氏拼音升序排列。
+
+### 特殊规则
+
+- 教师照片直接 {中文名}.{ext}（邹建平.jpg、侯冬梅.png），无学历前缀
+- 教师卡片是 <a> 链接跳详情页，学生卡片是 <div> 仅展示
+- 必须同时更新中英文两个页面
+- 覆盖上传只需替换文件，不改模板
+
+
+
+
