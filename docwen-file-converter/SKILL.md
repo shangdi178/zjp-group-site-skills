@@ -106,6 +106,30 @@ description: 公文文档格式转换工具，对接本地 DocWenCLI 命令行�
 & "D:\Softwave\DocWen-windows-x64\DocWenCLI.exe" numbering-schemes
 ```
 
+## 从DOCX提取照片
+
+DOCX中的嵌入图片可通过 Python + Pillow 提取：
+
+```powershell
+python -c "
+import docx, os
+from PIL import Image
+import io
+
+doc = docx.Document('input.docx')
+for rel in doc.part.rels.values():
+    if 'image' in rel.reltype:
+        img_data = rel.target_part.blob
+        img = Image.open(io.BytesIO(img_data))
+        if img.mode == 'RGBA':
+            img = img.convert('RGB')
+        img.save('output.jpg', 'JPEG', quality=92)
+        break  # first image only
+"
+```
+
+结合批量处理可依次提取所有DOCX文件中的照片。
+
 ## 注意事项
 
 - 工具路径固定为 `D:\Softwave\DocWen-windows-x64\DocWenCLI.exe`
