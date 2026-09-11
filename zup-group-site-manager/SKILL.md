@@ -534,6 +534,68 @@ Step 4: 同步更新英文页面同理。
 - `pi-meta-item` 列宽：`grid-template-columns` 至少 64px，避免四字标签折行
 - 长文本项跨列：`.pi-meta-item.span-2 { grid-column:1 / -1; }`
 
+## 📒 2026-08 经验补充（专利核对 / 新增教师 / EN 切换）
+
+### 教师专利章节核对与修复
+
+实测发现的错误类型清单（12 位教师中 5 位中招）：
+
+| 错误类型 | 案例 |
+|---------|------|
+| 发明人名单整体错位（整段用了他人/其他项目的专利数据） | 侯冬梅、吴美凤中文页全部条目；张龙帅第2-7条；王登科英文页全部 |
+| 同一发明人重复出现 | 侯冬梅第3条"邹建平"出现两次 |
+| 英文页缺整个 Patents 章节 | 侯冬梅-英文、吴美凤-英文 |
+| 英文页未翻译（条目仍为中文、教师姓名用汉字非拼音） | 张龙帅-英文、王登科-英文、穆毅-英文 |
+| 发明人张冠李戴 | 穆毅-英文：梅艺→梅晶、童欣鹭→童贤俊、陈颖→何盼 |
+
+核对流程（多代理分工）：
+1. 并行 explorer 分组核对（每组 3 人，中文页+英文页一起核），要求输出精确 diff（行号+错误原文+修正文本）
+2. orchestrator 必须亲自读 md 验证 explorer 的修正文本，不盲信
+3. fixer 分组修复（每人写范围互斥的文件集），要求 fixer 自己读 md 转录而非照抄转述
+4. orchestrator 用 grep 抽查：旧错误姓名应清零、新内容应就位、新增章节须在 `pi-cv-content` 内部
+
+基准新鲜度：`老师简介/md/*.md` 的 LastWriteTime 必须晚于对应 docx，否则先重新转换再核对。
+
+源文档笔误处理：明显笔误（如"利号"→专利号、"一现含"→一种含）按正确写法上页面，并向用户标注建议改源文件。
+
+英文页专利格式：拼音 given-name-first（Jian Yu / Dongmei Hou），教师姓名加粗，风格跟随该页第 1 条或 Publications 已用写法（如 Long-Shuai Zhang 连字符风格则全页统一）；专利号/授权号保持与中文版完全一致。
+
+### 新增教师上线 SOP（周艳蕾案例）
+
+1. **docx→md 转换**：python-docx 提取段落（Heading 映射 #/##/###），保存到 `老师简介/md/{姓名}.md`，同时打印 tables 数确认无表格遗漏。
+2. **源文档交叉校验（关键！）**：新教师文档常由老教师文档复制修改而来，必须检查姓名/职称/邮箱/简介是否残留他人信息。周艳蕾案例：简介误写"刘玲玲，讲师"、邮箱是刘玲玲的。发现即拦截并询问用户，不得直接上页面。
+3. **空章节去除**：论文/专利章节无内容则页面不显示该章节。
+4. **页面创建**：参照最简结构模板页（付航页较精简）；英文姓名 given-name-first（Yanlei Zhou）；无邮箱则整个 meta-item 不渲染；个人简介缺失时可代写但只能基于文档中的教育/工作经历，不虚构论文数量等。
+5. **教师队伍卡片**：追加到列表末尾（排序惯例 教授→副教授→讲师→其他职称）；英文列表卡片在 en 节点建立前指向中文 URL `~/tdcy/jsdw/{缩写}`。
+6. **搜索数据**：`搜索.cshtml` 加单教师条目 `{t:'姓名', u:'@siteUrl/tdcy/jsdw/{缩写}', k:'...'}` 并同步更新"教师队伍"聚合关键词；`搜索-英文.cshtml` 无单教师条目结构，只更新 Faculty 聚合关键词。
+7. **照片**：放 `content/jpzougroup/home/img/members/teachers/{中文名}.jpg`。警惕扩展名假转换——PNG 直接改名 .jpg 字节数不变，用 Pillow 打开看 format 字段识别；真转 JPEG（RGBA 先铺白底），竖版 ~3:4 与现有照片一致。无照片时 onerror 占位自动生效，无需改代码。
+8. **CMS 后台**：创建节点 `{缩写}` / `en-{缩写}` 并绑定 `jpzougroup/Pages/{姓名}[-英文].cshtml`，否则卡片和搜索结果点击 404。
+
+### EN 语言切换死链防御模式
+
+根因：CMS 未创建 en-* 节点时，`Power.Url.NodeUrl("en-xxx")` 返回**空字符串**（不是 null），页头渲染出 `<a href="">EN</a>` 死链。
+
+诊断方法：
+```powershell
+# 实测线上切换链接
+$html = (Invoke-WebRequest 'https://jpzougroup.nchu.edu.cn/tdcy/jsdw/wmf' -UseBasicParsing).Content
+[regex]::Matches($html, '<a[^>]*href="([^"]*)"[^>]*aria-label="Switch to English"[^>]*>')
+# 对比已建节点页面（负责人页 href 正常即为对照）
+# 直接测 en URL 状态码确认节点是否存在
+```
+
+防御代码（已应用于 13 个中文教师详情页第 6-7 行）：
+
+```csharp
+var langEnUrl = Power.Url.NodeUrl("en-wmf");
+ViewBag.LangEn = string.IsNullOrEmpty(langEnUrl) ? Url.Content("~/en-tdcy/en-jsdw") : langEnUrl;
+```
+
+- 节点缺失时回退到英文教师队伍页（已验证可用），建好节点后自动切回真实英文详情页，无需回改代码
+- 栏目页（研究方向/研究成果/教师队伍等）的英文章节节点均已存在，无需此防御
+- 待建英文教师节点清单：en-wmf/en-zls/en-yj/en-hdm/en-my/en-wdk/en-zjh/en-tl/en-wp/en-yqw/en-fh/en-lll/en-zyl
+
+
 
 
 
